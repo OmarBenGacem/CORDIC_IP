@@ -3,8 +3,10 @@ module tb ();
 
 	//Inputs to DUT are reg type
 	reg [31:0] dataa;
+    reg [31:0] datab;
     wire done;
 	reg clk;
+
 
 	//Output from DUT is wire type
 	wire [31:0] result;
@@ -13,13 +15,15 @@ module tb ();
 
 	//Instantiate the DUT
 	//mul refers to the verilog module defined by the LPM_MULT ip
-    //module  mul_add(aclr, clk_en, clock, dataa, datab, result, done) ;
+    //module  mul_add(aclr, clk_en, clk, dataa, datab, result, done) ;
 	mul_add unit(
-        .adlr ()
-        .clk_en
-		.x     (dataa),
+        .adlr (1'b0),
+        .clk_en (1'b1),
+		
         .clk   (clk),
-		.y     (result),
+        .xdata     (dataa),
+        .datab     (datab),
+		.result     (result),
         .done  (done)
 	);
 
