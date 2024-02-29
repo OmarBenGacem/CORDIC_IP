@@ -1,9 +1,9 @@
-module  mul_add(aclr, clk_en, clock, dataa, datab, result, done) ;
+module  mul_add(aclr, clk_en, clk, dataa, datab, result, done) ;
 	//outputs result <= (dataa + datab) + datab;
 	parameter ADD_LATENCY = 7;
 	parameter MUL_LATENCY = 5;
 	parameter MUL_LATENCY_BIN = {COUNTER_WIDTH{4'd5}};
-	paremeter ADD_LATENCY_BIN = {COUNTER_WIDTH{4'd7}};
+	parameter ADD_LATENCY_BIN = {COUNTER_WIDTH{4'd7}};
 	parameter DATA_WIDTH = 32;
 	parameter STATE_WIDTH = 3;
 	parameter COUNTER_WIDTH = 10;
@@ -16,18 +16,21 @@ module  mul_add(aclr, clk_en, clock, dataa, datab, result, done) ;
 	
 	input   					   aclr;
 	input   					   clk_en;
-	input   					   clock;
+	input   					   clk;
+	//input 						   rst;
 	input      [DATA_WIDTH - 1:0]  dataa;
 	input      [DATA_WIDTH - 1:0]  datab;
 	output reg [DATA_WIDTH - 1:0]  result;
 	output reg 					   done;
 
+	wire 	   [DATA_WIDTH - 1:0] result_wire;
 	wire 	   [DATA_WIDTH - 1:0] result_connection;
 	reg  						  enable_add;
 	reg 						  enable_mul;	
 	reg							  delay_reset;
 	reg [COUNTER_WIDTH - 1:0]     counter_max;
-	reg 						  counter_done;
+	wire 						  counter_done;
+	reg [STATE_WIDTH - 1:0] 	  state;
 
 	fp_mul	multiplier (
 		.aclr ( aclr ),
@@ -53,7 +56,7 @@ module  mul_add(aclr, clk_en, clock, dataa, datab, result, done) ;
 		.clock ( clk ),
 		.dataa ( result_connection ),
 		.datab ( datab ),
-		.result ( result )
+		.result ( result_wire )
 	);
 
 	initial begin
@@ -66,9 +69,9 @@ module  mul_add(aclr, clk_en, clock, dataa, datab, result, done) ;
 	end
 
 
-	always (@posedge clk) begin
+	always @(posedge clk) begin
 
-		if (rst) begin
+		if (aclr) begin
 
 			state <= IDLE;
 			result <= {DATA_WIDTH{1'b0}};
@@ -143,7 +146,7 @@ module  mul_add(aclr, clk_en, clock, dataa, datab, result, done) ;
 				end
 
 			DONE: begin
-
+					result <= result_wire;
 					done <= 1'b1;
 					enable_add <= 1'b0;
 					enable_mul <= 1'b0;

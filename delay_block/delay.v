@@ -1,4 +1,4 @@
-module delay(clk, rst, max, done)
+module delay(clk, rst, max, done);
 
     parameter COUNTER_WIDTH = 10;
     parameter STATE_WIDTH = 2;
@@ -14,7 +14,7 @@ module delay(clk, rst, max, done)
     reg [STATE_WIDTH   - 1:0]  state;
 
 
-    always (@posedge clk) begin
+    always @(posedge clk) begin
         
         if (rst) begin
             done <= 1'b0;
