@@ -65,8 +65,9 @@ initial begin
 
 end
 
-wire                          sign_result;
-wire [FLOAT_DATA_WIDTH - 1:0] angle;
+wire                            sign_result;
+wire [FLOAT_DATA_WIDTH - 1:0]   angle;
+wire                            scaler_done;
 
 ancle_scaler scaler (
 
@@ -75,7 +76,8 @@ ancle_scaler scaler (
     .clk_en     (clk_en),
     .angle      (unscaled_angle),
     .scaled     (angle),
-    .sign       (sign_result)
+    .sign       (sign_result),
+    .done       (scaler_done)
 
 );
 
