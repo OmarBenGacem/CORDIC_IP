@@ -1,4 +1,4 @@
-module CORDIC(clk, rst, unscaled_angle, result, done);
+module CORDIC(clk, rst, clk_en, unscaled_angle, result, done);
 
 
 
@@ -30,8 +30,10 @@ parameter DONE = {STATE_WIDTH{'b0001}}
 
 
 //IO
+input                               
 input                               clk;
 input                               rst;
+input                               clk_en;
 input      [FLOAT_DATA_WIDTH - 1:0] unscaled_angle;
 output                              done;
 output reg [FLOAT_DATA_WIDTH - 1:0] result;
@@ -41,6 +43,7 @@ output reg [FLOAT_DATA_WIDTH - 1:0] result;
 reg  [COUNTER_WIDTH - 1:0]         counter_max;
 reg  [CORDIC_COUNTER_WIDTH - 1: 0] cordic_counter;
 reg  [STATE_WIDTH - 1: 0]          state;
+reg                                start_scaler;       
 
 
 //Data Registers (and ROM)
@@ -58,6 +61,8 @@ initial begin
     x <= {{CORDIC_DATA_WIDTH}'b000010010000110001111100}; //0.607252935 = 0000000 . 100100001100011111000111000111
     cordic_counter <= {{CORDIC_COUNTER_WIDTH}'b0};
     state <= {{STATE_WIDTH}'b0};
+    start_scaler <= 1'b0;
+
 end
 
 wire                          sign_result;
@@ -67,10 +72,10 @@ ancle_scaler scaler (
 
     .clk        (clk),
     .rst        (rst),
+    .clk_en     (clk_en),
     .angle      (unscaled_angle),
     .scaled     (angle),
     .sign       (sign_result)
-
 
 );
 
@@ -81,16 +86,22 @@ delay stopper (
 		.rst  ( delay_reset ),
 		.done ( counter_done )
 
-
 );
 
 
 always @(posedge clk) begin
 
+    if (rst) begin
+
+    end
+
     case(state):
 
         IDLE: begin
 
+            if (clk_en) begin
+                state <= 
+            end
 
         end
 
@@ -111,7 +122,7 @@ always @(posedge clk) begin
 
 
         end
-        
+
     endcase
 
 end
