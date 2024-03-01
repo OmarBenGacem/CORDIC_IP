@@ -1,0 +1,58 @@
+C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/mul_add/mul_add_tb.v {1 {vlog -work work -stats=none C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/mul_add/mul_add_tb.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module tb
+
+Top level modules:
+	tb
+
+} {} {}} C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/fp_mul/fp_mul.v {1 {vlog -work work -stats=none C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/fp_mul/fp_mul.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module fp_mul_altfp_mult_tmo
+-- Compiling module fp_mul
+
+Top level modules:
+	fp_mul
+
+} {} {}} C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/add/add.v {1 {vlog -work work -stats=none C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/add/add.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module add_altbarrel_shift_ltd
+-- Compiling module add_altbarrel_shift_aeb
+-- Compiling module add_altpriority_encoder_3e8
+-- Compiling module add_altpriority_encoder_6e8
+-- Compiling module add_altpriority_encoder_be8
+-- Compiling module add_altpriority_encoder_3v7
+-- Compiling module add_altpriority_encoder_6v7
+-- Compiling module add_altpriority_encoder_bv7
+-- Compiling module add_altpriority_encoder_r08
+-- Compiling module add_altpriority_encoder_rf8
+-- Compiling module add_altpriority_encoder_qb6
+-- Compiling module add_altpriority_encoder_nh8
+-- Compiling module add_altpriority_encoder_qh8
+-- Compiling module add_altpriority_encoder_vh8
+-- Compiling module add_altpriority_encoder_fj8
+-- Compiling module add_altpriority_encoder_n28
+-- Compiling module add_altpriority_encoder_q28
+-- Compiling module add_altpriority_encoder_v28
+-- Compiling module add_altpriority_encoder_f48
+-- Compiling module add_altpriority_encoder_e48
+-- Compiling module add_altfp_add_sub_50k
+-- Compiling module add
+
+Top level modules:
+	add
+
+} {} {}} C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/delay_block/delay.v {1 {vlog -work work -stats=none C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/delay_block/delay.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module delay
+
+Top level modules:
+	delay
+
+} {} {}} C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/mul_add/mul_add.v {1 {vlog -work work -stats=none C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/mul_add/mul_add.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module mul_add
+
+Top level modules:
+	mul_add
+
+} {} {}}

@@ -1,0 +1,577 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dC:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/simulation/modelsim
+vadd
+Z0 !s110 1709244377
+!i10b 1
+!s100 2bcfH^Ig_jiLK8CeHYoLE0
+Iibm=dV9ma>S`7kHA^0Mki3
+Z1 VDg1SIo80bB@j0V0VzS_@n1
+Z2 dC:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/fp_mul
+Z3 w1708947028
+Z4 8C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/add/add.v
+Z5 FC:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/add/add.v
+L0 2623
+Z6 OV;L;10.5b;63
+r1
+!s85 0
+31
+Z7 !s108 1709244377.000000
+Z8 !s107 C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/add/add.v|
+Z9 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/add/add.v|
+!i113 1
+Z10 o-work work
+Z11 tCvgOpt 0
+vadd_altbarrel_shift_aeb
+R0
+!i10b 1
+!s100 mL:hh0;f2_PXTLn???CmO1
+Ig=IKVc<SBB6:73I>9MDbY1
+R1
+R2
+R3
+R4
+R5
+L0 115
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altbarrel_shift_ltd
+R0
+!i10b 1
+!s100 :dC879_5XOTK=R4`R^k]I2
+ITjBbWa;^7TTOlf_laHPW[1
+R1
+R2
+R3
+R4
+R5
+L0 50
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altfp_add_sub_50k
+R0
+!i10b 1
+!s100 4RPb[HQi0]23nc4gT@8aD1
+I`_NAhg7EMf_lESH9c@1<L1
+R1
+R2
+R3
+R4
+R5
+L0 709
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altpriority_encoder_3e8
+R0
+!i10b 1
+!s100 Mh^oN]FTPFh0UDmoIJlL_3
+I6W@:HC_KAdEWGYHd`id;J1
+R1
+R2
+R3
+R4
+R5
+L0 165
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altpriority_encoder_3v7
+R0
+!i10b 1
+!s100 `Y<F7`_TVO6b2:>=OV=_30
+ID=RQ?LTQ2F>g7PzHF44aY0
+R1
+R2
+R3
+R4
+R5
+L0 262
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altpriority_encoder_6e8
+R0
+!i10b 1
+!s100 :iBkB`;L`W_QdGFAZ?0Bn3
+ITh4PWVTC`FN[S1=e7Q]W`0
+R1
+R2
+R3
+R4
+R5
+L0 184
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altpriority_encoder_6v7
+R0
+!i10b 1
+!s100 l:loldhiCbc5z9@P8fc3N2
+IKN@S8X6[jckabNeAg1`[22
+R1
+R2
+R3
+R4
+R5
+L0 278
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altpriority_encoder_be8
+R0
+!i10b 1
+!s100 PgC>MkCDa:YBn1@k5UBXi1
+I9F?IRV[5bieJYF0M^Dc@I1
+R1
+R2
+R3
+R4
+R5
+L0 217
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altpriority_encoder_bv7
+R0
+!i10b 1
+!s100 KPU;g:Hj>;inD3UE;IVDU3
+IdO4FlVRPhigVVPngN8dRQ3
+R1
+R2
+R3
+R4
+R5
+L0 306
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altpriority_encoder_e48
+R0
+!i10b 1
+!s100 cM[kCG9zP;UTMdkmEe3Tn1
+IB3S8V9ofOzYzc]ReQHz731
+R1
+R2
+R3
+R4
+R5
+L0 681
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altpriority_encoder_f48
+R0
+!i10b 1
+!s100 lVSOn9a[X0];Z6GObUoT:0
+I5b^BU8e>[eRLb_7CPMKXA1
+R1
+R2
+R3
+R4
+R5
+L0 653
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altpriority_encoder_fj8
+R0
+!i10b 1
+!s100 8ZF;lBN=SOAGZfD[ONWzJ2
+IFDCc7^YQQYiQ[fIk5U^Tf0
+R1
+R2
+R3
+R4
+R5
+L0 532
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altpriority_encoder_n28
+R0
+!i10b 1
+!s100 `UN1z5meXAB1DSHf[ci122
+I2feea35zN8GGLb^jGCH@h0
+R1
+R2
+R3
+R4
+R5
+L0 581
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altpriority_encoder_nh8
+R0
+!i10b 1
+!s100 k<9hd>3>]6;1[R5OFhm=X2
+IL5m`a9F_l<iGZB1cZZSj_2
+R1
+R2
+R3
+R4
+R5
+L0 447
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altpriority_encoder_q28
+R0
+!i10b 1
+!s100 3SeE^`3Ff`XM]NOL@^VKV2
+I`GB95X82j]dP?o@IMMZ_41
+R1
+R2
+R3
+R4
+R5
+L0 597
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altpriority_encoder_qb6
+R0
+!i10b 1
+!s100 o6cZ5]Q3cJHzzSozGQA8F2
+ITc`gG`ZnMMAVk>J`iHzCm3
+R1
+R2
+R3
+R4
+R5
+L0 399
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altpriority_encoder_qh8
+R0
+!i10b 1
+!s100 JgCRnmKK2_^5hGiXSliSM0
+I8PAF:c08GMb96BkB9Jm]H3
+R1
+R2
+R3
+R4
+R5
+L0 466
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altpriority_encoder_r08
+R0
+!i10b 1
+!s100 ^X1TORgZclmnmNKObN0;e1
+IQY2leK_bfjQmXd2hToGR72
+R1
+R2
+R3
+R4
+R5
+L0 334
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altpriority_encoder_rf8
+R0
+!i10b 1
+!s100 oJ=@88bSJ_kFV?j;;dbgA3
+I68dUI5F5zZ5ozWFbJY65@0
+R1
+R2
+R3
+R4
+R5
+L0 366
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altpriority_encoder_v28
+R0
+!i10b 1
+!s100 1e0>0?<QbY<bj2N5L1JSN0
+IaCAJ?_bP8Qbn``OidUOQK2
+R1
+R2
+R3
+R4
+R5
+L0 625
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vadd_altpriority_encoder_vh8
+R0
+!i10b 1
+!s100 :KPQjaZhLBA>zjWHOb?<d0
+IBKnjdo39YlijzT]MeMY2`2
+R1
+R2
+R3
+R4
+R5
+L0 499
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vdelay
+R0
+!i10b 1
+!s100 9@C[BBYn<?N_8b_QXbP`o0
+Ijhlld61gH:`ThHAfl]N:K0
+R1
+R2
+w1709226436
+8C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/delay_block/delay.v
+FC:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/delay_block/delay.v
+L0 1
+R6
+r1
+!s85 0
+31
+R7
+!s107 C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/delay_block/delay.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/delay_block/delay.v|
+!i113 1
+R10
+R11
+vfp_mul
+R0
+!i10b 1
+!s100 noSdF4RXb_?`0>YEkWlfa2
+I9oiR14UAf=Bfj;MF2E9`=1
+R1
+R2
+Z12 w1708884112
+Z13 8C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/fp_mul/fp_mul.v
+Z14 FC:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/fp_mul/fp_mul.v
+L0 518
+R6
+r1
+!s85 0
+31
+R7
+Z15 !s107 C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/fp_mul/fp_mul.v|
+Z16 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/fp_mul/fp_mul.v|
+!i113 1
+R10
+R11
+vfp_mul_altfp_mult_tmo
+R0
+!i10b 1
+!s100 W=UFgKY0bVG7kDoFP6aeM1
+I2>;?CijeZSc@LZdJDL57A0
+R1
+R2
+R12
+R13
+R14
+L0 46
+R6
+r1
+!s85 0
+31
+R7
+R15
+R16
+!i113 1
+R10
+R11
+vmul_add
+R0
+!i10b 1
+!s100 l?FOcYnYj@R_Ma2H0@UT`0
+Io[MJEd13mJ@nTZg0a^1`61
+R1
+R2
+w1709244111
+8C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/mul_add/mul_add.v
+FC:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/mul_add/mul_add.v
+L0 1
+R6
+r1
+!s85 0
+31
+R7
+!s107 C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/mul_add/mul_add.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/mul_add/mul_add.v|
+!i113 1
+R10
+R11
+vtb
+R0
+!i10b 1
+!s100 h4nM=CMgHE<NUI[2`5Aci1
+Ij^eCMzEO0W]HeH2]C9b9]0
+R1
+R2
+w1709229304
+8C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/mul_add/mul_add_tb.v
+FC:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/mul_add/mul_add_tb.v
+L0 2
+R6
+r1
+!s85 0
+31
+R7
+!s107 C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/mul_add/mul_add_tb.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/omar_/Documents/Uni_Work/Digital_Systems_Design/CORDIC/ip/mul_add/mul_add_tb.v|
+!i113 1
+R10
+R11
