@@ -54,26 +54,12 @@ reg  [CORDIC_DATA_WIDTH - 1: 0]   x;
 reg  [CORDIC_DATA_WIDTH - 1: 0]   y;
 
 
-
-initial begin
-
-    working_angle <= {{CORDIC_DATA_WIDTH}'b0};
-    y <= {{CORDIC_DATA_WIDTH}'b0};
-    x <= {{CORDIC_DATA_WIDTH}'b000010010000110001111100}; //0.607252935 = 0000000 . 100100001100011111000111000111
-    cordic_counter <= {{CORDIC_COUNTER_WIDTH}'b0};
-    state <= {{STATE_WIDTH}'b0};
-    start_conversion <= 1'b0;
-    counter_max <= CONVERSION_LATANCY;
-
-end
-
-
 wire                            sign_result;
 wire [FLOAT_DATA_WIDTH - 1:0]   angle;
 wire                            conversion_done;
 
 //module convert_fp_fixed (aclr, clk_en, clock, dataa, result)/* synthesis synthesis_clearbox = 1 */;
-float_to_fixed converter (
+convert_8_bit converter (
 
     .clock      ( clk ),
     .aclr       ( rst ),
@@ -93,6 +79,18 @@ delay stopper (
 );
 
 
+initial begin
+
+    working_angle <= {{CORDIC_DATA_WIDTH}'b0};
+    y <= {{CORDIC_DATA_WIDTH}'b0};
+    x <= {{CORDIC_DATA_WIDTH}'b000010010}; //0.607252935 = 0000000 . 100100001100011111000111000111
+    cordic_counter <= {{CORDIC_COUNTER_WIDTH}'b0};
+    state <= {{STATE_WIDTH}'b0};
+    start_conversion <= 1'b0;
+    counter_max <= CONVERSION_LATANCY;
+
+end
+
 always @(posedge clk) begin
 
     if (rst) begin
@@ -107,6 +105,7 @@ always @(posedge clk) begin
                 state <= CONVERTING;
                 start_conversion <= 1'b1;
                 delay_reset <= 1'b0; //start delay block
+                cordic_counter <= 4'b0;
             end
 
         end
@@ -122,7 +121,13 @@ always @(posedge clk) begin
 
         CORDIC_MAIN: begin
 
-            
+            if (cordic_counter == CORDIC_DEPTH) begin
+                state <= 1'b1;
+                done <= 1'b1;
+            end else begin
+                
+                cordic_counter = cordic_counter + 1;
+            end
 
         end
 
