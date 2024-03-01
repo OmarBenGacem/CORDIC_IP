@@ -1,0 +1,9 @@
+set_global_assignment -name IP_TOOL_NAME "LPM_COMPARE"
+set_global_assignment -name IP_TOOL_VERSION "18.1"
+set_global_assignment -name IP_GENERATED_DEVICE_FAMILY "{Cyclone V}"
+set_global_assignment -name VERILOG_FILE [file join $::quartus(qip_path) "eight_bit_fixed_lt.v"]
+set_global_assignment -name MISC_FILE [file join $::quartus(qip_path) "eight_bit_fixed_lt.bsf"]
+set_global_assignment -name MISC_FILE [file join $::quartus(qip_path) "eight_bit_fixed_lt_inst.v"]
+set_global_assignment -name MISC_FILE [file join $::quartus(qip_path) "eight_bit_fixed_lt_bb.v"]
+set_global_assignment -name MISC_FILE [file join $::quartus(qip_path) "eight_bit_fixed_lt.inc"]
+set_global_assignment -name MISC_FILE [file join $::quartus(qip_path) "eight_bit_fixed_lt.cmp"]
