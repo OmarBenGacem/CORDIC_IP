@@ -1,18 +1,23 @@
 module  mul_add(aclr, clk_en, clk, dataa, datab, result, done) ;
 	//outputs result <= (dataa + datab) + datab;
 	parameter ADD_LATENCY = 7;
-	parameter MUL_LATENCY = 5;
-	parameter MUL_LATENCY_BIN = {COUNTER_WIDTH{4'd5}};
-	parameter ADD_LATENCY_BIN = {COUNTER_WIDTH{4'd7}};
+	parameter MUL_LATENCY = 5;	
+	parameter COUNTER_WIDTH = 10;
+	//parameter MUL_LATENCY_BIN = {COUNTER_WIDTH{4'd5}};
+	parameter MUL_LATENCY_BIN = 10'b0000000101;
+	parameter ADD_LATENCY_BIN = 10'b0000000111;
 	parameter DATA_WIDTH = 32;
 	parameter STATE_WIDTH = 3;
-	parameter COUNTER_WIDTH = 10;
-	parameter STARTING = {STATE_WIDTH{3'b000}};
-	parameter WAITING_MUL = {STATE_WIDTH{3'b001}};
-	parameter START_ADD = {STATE_WIDTH{3'b010}};
-	parameter WAITING_ADD = {STATE_WIDTH{3'b011}};
-	parameter IDLE = {STATE_WIDTH{3'b111}};
-	parameter DONE = {STATE_WIDTH{3'b100}};
+	//parameter STARTING = {{STATE_WIDTH}{3'b000}};
+	//parameter WAITING_MUL = {STATE_WIDTH{3'b001}};
+	//parameter START_ADD = {STATE_WIDTH{3'b010}};
+	//parameter WAITING_ADD = {STATE_WIDTH{3'b011}};
+	parameter STARTING = 3'b000;
+	parameter WAITING_MUL = 3'b001;
+	parameter START_ADD = 3'b010;
+	parameter WAITING_ADD = 3'b011;
+	parameter IDLE = 3'b111;
+	parameter DONE = 3'b100;
 	
 	input   					   aclr;
 	input   					   clk_en;
@@ -60,7 +65,7 @@ module  mul_add(aclr, clk_en, clk, dataa, datab, result, done) ;
 	);
 
 	initial begin
-		state <= STARTING;
+		state <= IDLE;
 		result <= {DATA_WIDTH{1'b0}};
 		done <= 1'b0;
 		enable_add <= 1'b0;
@@ -84,22 +89,16 @@ module  mul_add(aclr, clk_en, clk, dataa, datab, result, done) ;
 
 			case(state)
 
-			IDLE: begin
+			IDLE: begin // 111
+					
+					done <= 1'b0;
+					enable_add <= 1'b0;
+					enable_mul <= 1'b0;
+					delay_reset <= 1'b0;
+					if (clk_en == 1'b1) state <= STARTING;
 
-					if (clk_en == 1'b1) begin
-						state <= STARTING;
-					end else begin
-
-						done <= 1'b0;
-						enable_add <= 1'b0;
-						enable_mul <= 1'b0;
-						delay_reset <= 1'b0;
-
-
-					end
-			   
 				end
-			STARTING: begin
+			STARTING: begin //000
 
 					enable_mul <= 1'b1;
 					state <= WAITING_MUL;
@@ -108,9 +107,9 @@ module  mul_add(aclr, clk_en, clk, dataa, datab, result, done) ;
 
 				end
 
-			WAITING_MUL: begin
+			WAITING_MUL: begin //001
 
-					if (delay_reset == 1'b1) delay_reset <= 1'b0;
+					if (delay_reset == 1'b1)  delay_reset <= 1'b0; 
 					
 					if (counter_done == 1'b1) begin
 						state <= START_ADD;
@@ -121,7 +120,7 @@ module  mul_add(aclr, clk_en, clk, dataa, datab, result, done) ;
 
 				end	
 
-			START_ADD: begin
+			START_ADD: begin //010
 
 					enable_add <= 1'b1;
 					state <= WAITING_ADD;
@@ -131,7 +130,7 @@ module  mul_add(aclr, clk_en, clk, dataa, datab, result, done) ;
 				end
 
 
-			WAITING_ADD: begin
+			WAITING_ADD: begin //011
 
 					if (delay_reset == 1'b1) delay_reset <= 1'b0;
 					
@@ -141,11 +140,10 @@ module  mul_add(aclr, clk_en, clk, dataa, datab, result, done) ;
 						delay_reset <= 1'b1;
 					end
 
-
-
 				end
 
-			DONE: begin
+			DONE: begin //100
+					if (delay_reset == 1'b1) delay_reset <= 1'b0;
 					result <= result_wire;
 					done <= 1'b1;
 					enable_add <= 1'b0;
@@ -156,7 +154,7 @@ module  mul_add(aclr, clk_en, clk, dataa, datab, result, done) ;
 			
 
 
-			default: state <= STARTING;
+			default: state <= IDLE;
 
 			endcase
 
