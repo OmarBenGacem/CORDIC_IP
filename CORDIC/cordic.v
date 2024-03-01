@@ -57,6 +57,10 @@ reg  [CORDIC_DATA_WIDTH - 1: 0]   y;
 wire                            sign_result;
 wire [FLOAT_DATA_WIDTH - 1:0]   angle;
 wire                            conversion_done;
+wire                            a_equal_x_gt;
+wire                            a_equal_x_lt;
+wire                            a_greater_than_x;
+wire                            a_less_than_x;
 
 //module convert_fp_fixed (aclr, clk_en, clock, dataa, result)/* synthesis synthesis_clearbox = 1 */;
 convert_8_bit converter (
@@ -78,6 +82,20 @@ delay stopper (
 
 );
 
+eight_bit_fixed_gt	angle_gt (
+	.dataa ( angle ),
+	.datab ( working_angle ),
+	.aeb ( a_equal_x_gt ),
+	.agb ( a_greater_than_x )
+	);
+
+
+eight_bit_fixed_lt	angle_lt (
+	.dataa ( angle ),
+	.datab ( working_angle ),
+	.aeb ( a_equal_x_lt ),
+	.alb ( a_less_than_x )
+	);
 
 initial begin
 
@@ -125,7 +143,7 @@ always @(posedge clk) begin
                 state <= 1'b1;
                 done <= 1'b1;
             end else begin
-                
+
                 cordic_counter = cordic_counter + 1;
             end
 
