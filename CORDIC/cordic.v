@@ -140,18 +140,36 @@ always @(posedge clk) begin
         CORDIC_MAIN: begin
 
             if (cordic_counter == CORDIC_DEPTH) begin
-                state <= 1'b1;
-                done <= 1'b1;
+                state <= DONE;
             end else begin
-
                 cordic_counter = cordic_counter + 1;
+
+                case(a_equal_x_gt)
+
+                    1'b1: begin
+                        //the angle equals the approximation being made
+                        state <= DONE;
+                    end
+
+                    1'b0: begin
+
+                        if (a_greater_than_x) begin
+
+                        end else begin
+
+                        end
+
+                    end
+
+                endcase
+
             end
 
         end
 
 
         DONE: begin
-
+            //need to convert back to floating point
 
         end
 
