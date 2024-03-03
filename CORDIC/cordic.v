@@ -52,8 +52,12 @@ reg  [CORDIC_DATA_WIDTH-1:0]      CORDIC_shifts [2**CORDIC_ADDRESS_WIDTH-1: 0]; 
 reg  [CORDIC_DATA_WIDTH - 1: 0]   working_angle;
 reg  [CORDIC_DATA_WIDTH - 1: 0]   x; 
 reg  [CORDIC_DATA_WIDTH - 1: 0]   y;
+reg  [CORDIC_DATA_WIDTH - 1: 0]   shifted_y;
+reg  [CORDIC_DATA_WIDTH - 1: 0]   shifted_x;
 
-
+wire [CORDIC_DATA_WIDTH - 1: 0]   new_x;
+wire [CORDIC_DATA_WIDTH - 1: 0]   new_y;
+wire [CORDIC_DATA_WIDTH - 1: 0]   new_angle;
 wire                            sign_result;
 wire [FLOAT_DATA_WIDTH - 1:0]   angle;
 wire                            conversion_done;
@@ -82,20 +86,28 @@ delay stopper (
 
 );
 
+
+eight_bit_int_addSub addsub_x (
+	.dataa ( x ),
+	.datab ( shifted_x ),
+    .addsub ( !(a_greater_than_x) ), //1 for sub, 0 for add
+	.result ( new_x )
+);
+
+eight_bit_int_addSub addsub_y (
+	.dataa ( y ),
+	.datab ( shifted_y ),
+    .addsub ( a_greater_than_x ), //1 for sub, 0 for add
+	.result ( new_y )
+);
+
 eight_bit_fixed_gt	angle_gt (
 	.dataa ( angle ),
 	.datab ( working_angle ),
 	.aeb ( a_equal_x_gt ),
-	.agb ( a_greater_than_x )
-	);
+	.agb ( new_angle )
+);
 
-
-eight_bit_fixed_lt	angle_lt (
-	.dataa ( angle ),
-	.datab ( working_angle ),
-	.aeb ( a_equal_x_lt ),
-	.alb ( a_less_than_x )
-	);
 
 initial begin
 
@@ -106,6 +118,8 @@ initial begin
     state <= {{STATE_WIDTH}'b0};
     start_conversion <= 1'b0;
     counter_max <= CONVERSION_LATANCY;
+    shifted_y <= y >>> cordic_counter;
+    shifted_x <= x >>> cordic_counter;
 
 end
 
@@ -153,11 +167,9 @@ always @(posedge clk) begin
 
                     1'b0: begin
 
-                        if (a_greater_than_x) begin
-
-                        end else begin
-
-                        end
+                        x <= x_new;
+                        y <= y_new;
+                        angle <= angle_new;
 
                     end
 
