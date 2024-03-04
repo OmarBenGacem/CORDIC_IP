@@ -1,5 +1,5 @@
 module  mul_add(aclr, clk_en, clk, dataa, datab, result, done) ;
-	//outputs result <= (dataa + datab) + datab;
+	//outputs result <= (dataa * datab) + datab;
 	parameter ADD_LATENCY = 7;
 	parameter MUL_LATENCY = 5;	
 	parameter COUNTER_WIDTH = 10;

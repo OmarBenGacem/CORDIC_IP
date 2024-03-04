@@ -143,7 +143,7 @@ always @(posedge clk) begin
         end
 
 
-        SCALING begin
+        CONVERTING begin
 
             if (conversion_counter == CONVERSION_LATANCY) state <= CORDIC_MAIN; start_conversion <= 1'b0;
             else conversion_counter <= conversion_counter + 1;
