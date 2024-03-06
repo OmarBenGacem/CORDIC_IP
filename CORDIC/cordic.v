@@ -134,8 +134,7 @@ initial begin
     state <= {{STATE_WIDTH}'b0};
     start_conversion <= 1'b0;
     counter_max <= CONVERSION_LATANCY;
-    shifted_y <= y >>> cordic_counter;
-    shifted_x <= x >>> cordic_counter;
+
 
 
     CORDIC_shifts[4'b0000] <= 22'b0110010010000111111011;
@@ -153,6 +152,10 @@ initial begin
 end
 
 always @(posedge clk) begin
+
+    //continuous signals
+    shifted_y <= y >>> cordic_counter;
+    shifted_x <= x >>> cordic_counter;
 
     if (rst) begin
         state  <= IDLE;
