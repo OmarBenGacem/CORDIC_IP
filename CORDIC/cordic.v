@@ -63,6 +63,7 @@ wire [CORDIC_DATA_WIDTH - 1: 0]   new_y;
 wire [CORDIC_DATA_WIDTH - 1: 0]   new_angle;
 wire                              sign_result;
 wire [FLOAT_DATA_WIDTH - 1:0]     angle;
+wire [FLOAT_DATA_WIDTH - 1:0]     result_flt;
 wire                              conversion_done;
 wire                              angle_greater_target;
 wire                              a_equal_x_lt;
@@ -87,8 +88,8 @@ FIXED_Convert converter_fix_fp (
     .clock      ( clk ),
     .aclr       ( rst ),
     .clk_en     ( start_conversion ),
-    .dataa      (  ),
-    .result     (  )
+    .dataa      ( x ),
+    .result     ( result_flt )
 
 );
 
@@ -113,6 +114,14 @@ Fixed_Add_Sub addsub_x (
 Fixed_Add_Sub addsub_y (
 	.dataa ( y ),
 	.datab ( shifted_y ),
+    .addsub ( !(a_greater_than_x) ), //1 for add, 0 for sun
+	.result ( new_y )
+);
+
+
+Fixed_Add_Sub addsub_angle (
+	.dataa ( angle ),
+	.datab ( CORDIC_shifts[cordic_counter] ),
     .addsub ( !(a_greater_than_x) ), //1 for add, 0 for sun
 	.result ( new_y )
 );
@@ -157,6 +166,8 @@ always @(posedge clk) begin
     shifted_y <= y >>> cordic_counter;
     shifted_x <= x >>> cordic_counter;
 
+    
+    
     if (rst) begin
         state  <= IDLE;
     end
@@ -195,29 +206,13 @@ always @(posedge clk) begin
 
         CORDIC_MAIN: begin
 
-            if (cordic_counter == CORDIC_DEPTH) begin
+            if (cordic_counter == CORDIC_DEPTH || angle_equal_target) begin
                 state <= DONE;
             end else begin
                 
-
-                case(angle_greater_target)
-
-                    1'b1: begin
-                        //the angle equals the approximation being made
-                        x <= x_new;
-                        y <= y_new;
-                        angle <= angle_new;
-                    end
-
-                    1'b0: begin
-
-                        x <= x_new;
-                        y <= y_new;
-                        angle <= angle_new;
-
-                    end
-                    
-                endcase
+                x <= x_new;
+                y <= y_new;
+                angle <= angle_new;
                 cordic_counter = cordic_counter + 1;
             end
 
@@ -233,6 +228,7 @@ always @(posedge clk) begin
 
         DONE: begin
             //need to convert back to floating point
+            result <= result_flt;
             done <= 1'b1;
             result <= x;
             if (!clk_en) state <= IDLE;
