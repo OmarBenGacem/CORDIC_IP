@@ -64,7 +64,7 @@ wire [CORDIC_DATA_WIDTH - 1: 0]   new_angle;
 wire                              sign_result;
 wire [FLOAT_DATA_WIDTH - 1:0]     angle;
 wire                              conversion_done;
-wire                              a_equal_x_gt;
+wire                              angle_greater_target;
 wire                              a_equal_x_lt;
 wire                              a_greater_than_x;
 wire                              a_less_than_x;
@@ -198,15 +198,15 @@ always @(posedge clk) begin
             if (cordic_counter == CORDIC_DEPTH) begin
                 state <= DONE;
             end else begin
-                cordic_counter = cordic_counter + 1;
+                
 
-                case(a_equal_x_gt)
+                case(angle_greater_target)
 
                     1'b1: begin
                         //the angle equals the approximation being made
-                        start_conversion <= 1'b1;
-                        delay_reset <= 1'b1; //start delay block
-                        state <= CONVERTING_BACK;
+                        x <= x_new;
+                        y <= y_new;
+                        angle <= angle_new;
                     end
 
                     1'b0: begin
@@ -216,9 +216,9 @@ always @(posedge clk) begin
                         angle <= angle_new;
 
                     end
-
+                    
                 endcase
-
+                cordic_counter = cordic_counter + 1;
             end
 
         end
