@@ -32,6 +32,7 @@ module delay(clk, rst, max, done);
 
             IDLE: begin //00
                 done <= 1'b0;
+                counter <= {COUNTER_WIDTH{1'b0}};
             end
 
             RUNNING: begin //01
