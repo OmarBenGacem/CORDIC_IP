@@ -121,6 +121,19 @@ initial begin
     shifted_y <= y >>> cordic_counter;
     shifted_x <= x >>> cordic_counter;
 
+
+    CORDIC_shifts[4'b0000] <= 22'b0110010010000111111011;
+    CORDIC_shifts[4'b0001] <= 22'b0011101101011000110011;
+    CORDIC_shifts[4'b0010] <= 22'b0001111101011011011101;
+    CORDIC_shifts[4'b0011] <= 22'b0000111111101010110111;
+    CORDIC_shifts[4'b0100] <= 22'b0000011111111101010101;
+    CORDIC_shifts[4'b0101] <= 22'b0000001111111111101010;
+    CORDIC_shifts[4'b0110] <= 22'b0000000111111111111101;
+    CORDIC_shifts[4'b0111] <= 22'b0000000011111111111111;
+    CORDIC_shifts[4'b1000] <= 22'b0000000001111111111111;
+    CORDIC_shifts[4'b1001] <= 22'b0000000000111111111111;
+
+
 end
 
 always @(posedge clk) begin
@@ -134,10 +147,21 @@ always @(posedge clk) begin
         IDLE: begin
 
             if (clk_en) begin
-                state <= CONVERTING;
-                start_conversion <= 1'b1;
-                delay_reset <= 1'b0; //start delay block
-                cordic_counter <= 4'b0;
+                if (angle_float == 32'b00111111010010010000111111011000 || angle_float == 32'b0) begin
+                    
+                    state <= DONE
+
+                    if (angle_float == 32'b0) result <= 32'b00111111100000000000000000000000; else result <= 00111111001101010000010011110011; 
+
+
+                    
+
+                end else begin
+                    state <= CONVERTING;
+                    start_conversion <= 1'b1;
+                    delay_reset <= 1'b0; //start delay block
+                    cordic_counter <= 4'b0;
+                end
             end
 
         end
@@ -182,6 +206,9 @@ always @(posedge clk) begin
 
         DONE: begin
             //need to convert back to floating point
+            done <= 1'b1;
+            result <= x;
+            if (!clk_en) state <= IDLE;
 
         end
 

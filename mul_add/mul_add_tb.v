@@ -17,14 +17,13 @@ module tb ();
 	//mul refers to the verilog module defined by the LPM_MULT ip
     //module  mul_add(aclr, clk_en, clk, dataa, datab, result, done) ;
 	mul_add unit(
-        .aclr (1'b0),
-        .clk_en (1'b1),
-		
-        .clk   (clk),
+        .aclr      (1'b0),
+        .clk_en    (1'b1),
+        .clk   	   (clk),
         .dataa     (dataa),
         .datab     (datab),
-		.result     (result),
-        .done  (done)
+		.result    (result),
+        .done  	   (done)
 	);
 
 	// ---- If a clock is required, see below ----
