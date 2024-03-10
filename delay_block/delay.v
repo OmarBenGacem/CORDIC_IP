@@ -18,21 +18,18 @@ module delay(clk, rst, max, done);
     reg [STATE_WIDTH   - 1:0]  state;
 
     initial state <= IDLE;
+    initial done <= 1'b0;
+    initial counter <= {COUNTER_WIDTH{1'b0}};
 
     always @(posedge clk) begin
         
-        if (rst) begin
-            done <= 1'b0;
-            counter <= {COUNTER_WIDTH{1'b0}};
-            state <= RUNNING;
-
-        end else begin
 
             case(state)
 
             IDLE: begin //00
                 done <= 1'b0;
                 counter <= {COUNTER_WIDTH{1'b0}};
+                if (rst) state <= RUNNING;
             end
 
             RUNNING: begin //01
@@ -42,15 +39,13 @@ module delay(clk, rst, max, done);
             end
 
             DONE: begin //10
-                if (done == 1'b0) done <= 1'b1;
-                else state <= IDLE;
+                done <= 1'b0;
+                state <= IDLE;
                 
             end
             default: state <= IDLE;
             endcase
 
-
-        end
     
     end
 

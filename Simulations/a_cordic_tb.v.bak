@@ -1,11 +1,11 @@
-`timescale 1 ns / 100 ps
-module aaa_tb ();
+`timescale 1 ns / 20 ns
+module a_cordic_tb ();
 
 	//Inputs to DUT are reg type
 	reg [31:0] dataa;
     wire done;
 	reg clk;
-
+	reg clk_en;
 
 	//Output from DUT is wire type
 	wire [31:0] result;
@@ -14,9 +14,9 @@ module aaa_tb ();
 
 	//Instantiate the DUT
     //module CORDIC(clk, rst, clk_en, angle_float, result, done);
-	mul_add unit(
+	CORDIC unit(
         .rst            (1'b0),
-        .clk_en         (1'b1),
+        .clk_en         (clk_en),
         .clk   	        (clk),
         .angle_float    (dataa),
 		.result         (result),
@@ -36,17 +36,38 @@ module aaa_tb ();
 		
 		// intialise/set input
 		clk = 1'b0;
+		clk_en <= 1'b1;
 		
 		// If using a clock
-		@(posedge clk); 
-		
-		// set dataa and datab                                 
-		dataa <= 32'b00111111000010111000010100011111; //x = 0.545 => 00111111010110101110100110011111 = 0x3F5AE99F
-        
-		//outputs result <= (dataa + datab) + datab = 2.9017653 + 5.32434 = 8.2261053
 
+		#1000
+
+		@(posedge clk); 
+		                               
+
+		dataa <= 32'b00111110001010001111010111000011; // x = 0.165 => 00111111011111001000010111101010 = 0x3f7c85ea
+
+		#1000
+		clk_en <= 1'b0;
+		#1000
+		clk_en <= 1'b1;
+		
 
 		#100
+		dataa <= 32'b00111111000010001011010000111001; //x = 0.534 => 00111111010110101110100110011111 = 0x3F5AE99F
+
+		#1000
+		clk_en <= 1'b0;
+		#1000
+		clk_en <= 1'b1;
+
+		#100
+		dataa <= 32'b00111111000010111000010100011111; //x = 0.545 => 00111111010110101110100110011111 = 0x3F5AE99F
+		//outputs cesult <= cos(0.545) = 0.85512729078 = 0.110110101110100110011
+
+
+
+		#10
 		$display($time, "<< Simulation Complete >>");
 		$stop;
 	end
