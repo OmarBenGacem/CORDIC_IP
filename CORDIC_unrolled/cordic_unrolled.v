@@ -1,12 +1,12 @@
-module CORDIC(clk, rst, clk_en, angle_float, result, done);
+module CORDIC_unrolled(clk, rst, clk_en, angle_float, result, done);
 
 
 
 //Data Parameters
 parameter FLOAT_DATA_WIDTH = 32;
 parameter CORDIC_ADDRESS_WIDTH = 4;
-parameter INTEGER_WIDTH = 1;
-parameter FRACTIONAL_WIDTH = 21;
+parameter INTEGER_WIDTH = 2;
+parameter FRACTIONAL_WIDTH = 20;
 parameter CORDIC_DATA_WIDTH = INTEGER_WIDTH + FRACTIONAL_WIDTH;
 
 //parameter x_default = 22'b0100110110111010011101; //21 fractional bits
