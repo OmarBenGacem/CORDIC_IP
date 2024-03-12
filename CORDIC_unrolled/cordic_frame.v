@@ -136,7 +136,7 @@ cordic_stage  cordic_1 (
 .new_angle    ( angle_1_to_2 ),
 .new_x        ( x_1_to_2 ),
 .new_y        ( y_1_to_2 ),
-.target_out   ( target_1_to_2 ),
+.target_out   ( target_1_to_2 )
 
 );
 
@@ -154,7 +154,7 @@ cordic_stage  cordic_2 (
 .new_angle    ( angle_2_to_3 ),
 .new_x        ( x_2_to_3 ),
 .new_y        ( y_2_to_3 ),
-.target_out   ( target_2_to_3 ),
+.target_out   ( target_2_to_3 )
 
 );
 
@@ -172,7 +172,7 @@ cordic_stage  cordic_3 (
 .new_angle    ( angle_3_to_4 ),
 .new_x        ( x_3_to_4 ),
 .new_y        ( y_3_to_4 ),
-.target_out   ( target_3_to_4 ),
+.target_out   ( target_3_to_4 )
 
 );
 
@@ -190,7 +190,7 @@ cordic_stage  cordic_4 (
 .new_angle    ( angle_4_to_5 ),
 .new_x        ( x_4_to_5 ),
 .new_y        ( y_4_to_5 ),
-.target_out   ( target_4_to_5 ),
+.target_out   ( target_4_to_5 )
 
 );
 
@@ -208,7 +208,7 @@ cordic_stage  cordic_5 (
 .new_angle    ( angle_5_to_6 ),
 .new_x        ( x_5_to_6 ),
 .new_y        ( y_5_to_6 ),
-.target_out   ( target_5_to_6 ),
+.target_out   ( target_5_to_6 )
 
 );
 
@@ -226,7 +226,7 @@ cordic_stage  cordic_6 (
 .new_angle    ( angle_6_to_7 ),
 .new_x        ( x_6_to_7 ),
 .new_y        ( y_6_to_7 ),
-.target_out   ( target_6_to_7 ),
+.target_out   ( target_6_to_7 )
 
 );
 
@@ -244,7 +244,7 @@ cordic_stage  cordic_7 (
 .new_angle    ( angle_7_to_8 ),
 .new_x        ( x_7_to_8 ),
 .new_y        ( y_7_to_8 ),
-.target_out   ( target_7_to_8 ),
+.target_out   ( target_7_to_8 )
 
 );
 
@@ -262,7 +262,7 @@ cordic_stage  cordic_8 (
 .new_angle    ( angle_8_to_9 ),
 .new_x        ( x_8_to_9 ),
 .new_y        ( y_8_to_9 ),
-.target_out   ( target_8_to_9 ),
+.target_out   ( target_8_to_9 )
 
 );
 
@@ -280,7 +280,7 @@ cordic_stage  cordic_9 (
 .new_angle    ( angle_9_to_10 ),
 .new_x        ( x_9_to_10 ),
 .new_y        ( y_9_to_10 ),
-.target_out   ( target_9_to_10 ),
+.target_out   ( target_9_to_10 )
 
 );
 
@@ -298,7 +298,7 @@ cordic_stage  cordic_10 (
 .new_angle    ( angle_10_to_11 ),
 .new_x        ( x_10_to_11 ),
 .new_y        ( y_10_to_11 ),
-.target_out   ( target_10_to_11 ),
+.target_out   ( target_10_to_11 )
 
 );
 
@@ -316,7 +316,7 @@ cordic_stage  cordic_11 (
 .new_angle    ( angle_11_to_12 ),
 .new_x        ( x_11_to_12 ),
 .new_y        ( y_11_to_12 ),
-.target_out   ( target_11_to_12 ),
+.target_out   ( target_11_to_12 )
 
 );
 
@@ -334,7 +334,7 @@ cordic_stage  cordic_12 (
 .new_angle    ( angle_12_to_13 ),
 .new_x        ( x_12_to_13 ),
 .new_y        ( y_12_to_13 ),
-.target_out   ( target_12_to_13 ),
+.target_out   ( target_12_to_13 )
 
 );
 
@@ -352,7 +352,7 @@ cordic_stage  cordic_13 (
 .new_angle    ( angle_13_to_14 ),
 .new_x        ( x_13_to_14 ),
 .new_y        ( y_13_to_14 ),
-.target_out   ( target_13_to_14 ),
+.target_out   ( target_13_to_14 )
 
 );
 
@@ -370,7 +370,7 @@ cordic_stage  cordic_14 (
 .new_angle    ( angle_14_to_15 ),
 .new_x        ( x_14_to_15 ),
 .new_y        ( y_14_to_15 ),
-.target_out   ( target_14_to_15 ),
+.target_out   ( target_14_to_15 )
 
 );
 
@@ -388,7 +388,7 @@ cordic_stage  cordic_15 (
 .new_angle    ( angle_15_to_16 ),
 .new_x        ( x_15_to_16 ),
 .new_y        ( y_15_to_16 ),
-.target_out   ( target_15_to_16 ),
+.target_out   ( target_15_to_16 )
 
 );
 
@@ -404,9 +404,9 @@ cordic_stage  cordic_16 (
 .x            ( x_15_to_16 ),
 .y            ( y_15_to_16 ),
 .new_angle    ( produced_angle ),
-.new_x        ( produced_x ),
+.new_x        ( produced_result ),
 .new_y        ( produced_y ),
-.target_out   ( produced_target ),
+.target_out   ( produced_target )
 
 );
 
@@ -419,9 +419,10 @@ cordic_stage  cordic_16 (
 initial begin
 
     initial_x <= x_default;   
-    initial_y <= y_default
+    initial_y <= y_default;
     initial_angle <= angle_default;
-    result <= produced_result;
+    result <= 22'b0;
+    
 
 end
 
@@ -430,8 +431,10 @@ always @(posedge clk) begin
     if (!clk_en || rst) begin
         //if clk_en goes low, disable the pipeline
         initial_x <= x_default;   
-        initial_y <= y_default
+        initial_y <= y_default;
         initial_angle <= angle_default;
+        
+    end else begin
         result <= produced_result;
     end
 

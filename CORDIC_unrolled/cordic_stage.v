@@ -6,26 +6,26 @@ parameter DATA_WIDTH = DECIMAL_WIDTH + INTEGER_WIDTH;
 parameter CORDIC_COUNTER_WIDTH = 4;
 
 
-input                                       clk;
-input                                       clk_en;
-input       [DATA_WIDTH - 1 : 0]            target;
-input       [CORDIC_COUNTER_WIDTH - 1 : 0]  shift_value;
-input       [DATA_WIDTH - 1 : 0]            shift_angle;
-input       [DATA_WIDTH - 1 : 0]            angle;
-input       [DATA_WIDTH - 1 : 0]            x;
-input       [DATA_WIDTH - 1 : 0]            y;
-output reg  [DATA_WIDTH - 1 : 0]            new_angle;
-output reg  [DATA_WIDTH - 1 : 0]            new_x;
-output reg  [DATA_WIDTH - 1 : 0]            new_y;
-output reg  [DATA_WIDTH - 1 : 0]            target_out; //used so CORDIC values in the pipeline have memory of their target
+input      		                                  clk;
+input      		                                  clk_en;
+input      		  [DATA_WIDTH - 1 : 0]            target;
+input      		  [CORDIC_COUNTER_WIDTH - 1 : 0]  shift_value;
+input  signed     [DATA_WIDTH - 1 : 0]            shift_angle;
+input  signed     [DATA_WIDTH - 1 : 0]            angle;
+input  signed     [DATA_WIDTH - 1 : 0]            x;
+input  signed     [DATA_WIDTH - 1 : 0]            y;
+output reg signed [DATA_WIDTH - 1 : 0]            new_angle;
+output reg signed [DATA_WIDTH - 1 : 0]            new_x;
+output reg signed [DATA_WIDTH - 1 : 0]            new_y;
+output reg        [DATA_WIDTH - 1 : 0]            target_out; //used so CORDIC values in the pipeline have memory of their target
 
-wire signed  [CORDIC_DATA_WIDTH - 1: 0]     shifted_y;
-wire signed  [CORDIC_DATA_WIDTH - 1: 0]     shifted_x;
-wire signed  [CORDIC_DATA_WIDTH - 1: 0]     computed_y;
-wire signed  [CORDIC_DATA_WIDTH - 1: 0]     computed_x;
-wire signed  [CORDIC_DATA_WIDTH - 1: 0]     computed_angle;
-wire                                        angle_equal_target;
-wire                                        angle_greater_target;
+wire signed  [DATA_WIDTH - 1: 0]  		   		  shifted_y;
+wire signed  [DATA_WIDTH - 1: 0]     			  shifted_x;
+wire signed  [DATA_WIDTH - 1: 0]		   	      computed_y;
+wire signed  [DATA_WIDTH - 1: 0]     			  computed_x;
+wire signed  [DATA_WIDTH - 1: 0]     			  computed_angle;
+wire                                        	  angle_equal_target;
+wire                                        	  angle_greater_target;
 
 
 
@@ -45,7 +45,7 @@ Fixed_Add_Sub_signed addsub_y (
 
 Fixed_Add_Sub_signed addsub_angle (
 	.dataa   ( angle ),
-	.datab   ( shift_value ),
+	.datab   ( shift_angle ),
     .add_sub ( !(angle_greater_target) ), //1 for add, 0 for sun
 	.result  ( computed_angle )
 );
@@ -63,6 +63,7 @@ initial begin
     new_angle <= 22'b0;
     new_x <= 22'b0;
     new_y <= 22'b0;
+	target_out <= 22'b0;
 
 end
 

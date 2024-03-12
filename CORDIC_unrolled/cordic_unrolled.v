@@ -15,10 +15,9 @@ parameter x_default = 22'b0010011011011101001110; //20 fractional bits
 //Latency Parameters
 parameter CONVERSION_LATANCY = 4;
 parameter CONVERSION_LATANCY_REV = 4;
-parameter CORDIC_LATENCY = 18;
+parameter CORDIC_LATENCY = 15;
 
 //Control Parameters
-parameter CORDIC_COUNTER_WIDTH = 4;
 parameter CORDIC_DEPTH = 15;
 parameter COUNTER_WIDTH = 10;
 parameter STATE_WIDTH = 5;
@@ -55,16 +54,16 @@ reg                                       delay_reset;
 
 //Data Registers (and ROM)
 reg  signed  [CORDIC_DATA_WIDTH - 1: 0]   target;
-reg  signed  [CORDIC_DATA_WIDTH - 1: 0]   working_angle;
-reg  signed  [CORDIC_DATA_WIDTH - 1: 0]   x; 
-reg  signed  [CORDIC_DATA_WIDTH - 1: 0]   y;
+wire signed  [CORDIC_DATA_WIDTH - 1: 0]   angle;
+reg  signed  [CORDIC_DATA_WIDTH - 1: 0]   cordic_output; 
+
 
 
 wire         [FLOAT_DATA_WIDTH - 1:0]     result_flt;
-wire         [FLOAT_DATA_WIDTH - 1:0]     cordic_res;
+wire         [CORDIC_DATA_WIDTH - 1:0]    cordic_res;
 wire                                      counter_done;      
 wire                                      cordic_done;    
-wire                                      cordic_reset;
+
 
 
 //module convert_fp_fixed (aclr, clk_en, clock, dataa, result)/* synthesis synthesis_clearbox = 1 */;
@@ -82,7 +81,7 @@ FIXED_Convert_twos_comp converter_fix_fp (
     .clock      ( clk ),
     .aclr       ( rst ),
     .clk_en     ( start_conversion ),
-    .dataa      ( x ),
+    .dataa      ( cordic_output ),
     .result     ( result_flt )
 );
 
@@ -104,30 +103,25 @@ delay stopper_cordic (
 
 //module cordic_frame (clk, clk_en, rst, target, result);
 
-cordic_frame cordic (
+cordic_frame cordic_frame_instance (
 
     .clk        ( clk ),
     .clk_en     ( start_cordic ),
     .rst        ( rst ),
-    .target     ( angle ),
+    .target     ( target ),
     .result     ( cordic_res )
 
 );
 
 
 initial begin
-
-    working_angle <= 22'b0;
-    y <= 22'b0;
-    cordic_counter <= 4'b0;
     state <= IDLE;
     result <= 22'b0;
-    x <= x_default;
     start_conversion <= 1'b0;
     counter_max <= CONVERSION_LATANCY;
     done <= 1'b0;
     target <= 22'b0;
-
+    cordic_output <= 22'b0;
     start_cordic <= 1'b0;
     cordic_reset <= 1'b0;
     cordic_latency <= CORDIC_LATENCY;
@@ -143,12 +137,8 @@ always @(posedge clk) begin
     if (rst) begin
         state  <= IDLE;
 
-        working_angle <= 22'b0;
-        y <= 22'b0;
-        cordic_counter <= 4'b0;
         state <= IDLE;
         result <= 22'b0;
-        x <= x_default;
         start_conversion <= 1'b0;
         counter_max <= CONVERSION_LATANCY;
         done <= 1'b0;
@@ -166,26 +156,13 @@ always @(posedge clk) begin
             //do nothing unless clock begins
             done <= 1'b0; // reset done signal
             if (clk_en) begin
-
-                //Shorting out 45 and 0 degrees
-    
-                    if (angle_float == 32'b10111111010010010000111111011000 || angle_float == 32'b00111111010010010000111111011000 || angle_float == 32'b0) begin  
-                        // short out 0 and +/-45 degrees
-                        state <= DONE;                                                              
-                        result <= (angle_float == 32'b0) ? 32'b00111111100000000000000000000000 : 32'b00111111001101010000010011110011; 
-                    end else begin                
-                        state <= CONVERTING;
-                        start_conversion <= 1'b1;
-                        delay_reset <= 1'b1; //start delay block
-                        cordic_counter <= 4'b0;
-                        x <= x_default; //reset value of x
-                        working_angle <= 22'b0;
-                        y <= 22'b0;
-                        result <= 22'b0;
-                        done <= 1'b0;
-                        target <= 22'b0;
-                    end
-                    
+                
+                state <= CONVERTING;
+                start_conversion <= 1'b1;
+                delay_reset <= 1'b1; //start delay block
+                result <= 22'b0;
+                done <= 1'b0;
+                target <= 22'b0;
             
             end 
 
@@ -208,7 +185,7 @@ always @(posedge clk) begin
 
             cordic_reset <= 1'b0;
             if (cordic_done) begin
-                x <= cordic_res;
+                cordic_output <= cordic_res;
                 start_cordic <= 1'b0;
                 delay_reset <= 1'b1; //start delay block
                 start_conversion <= 1'b1;
