@@ -76,12 +76,8 @@ always @(posedge clk) begin
         new_x <= computed_x;
         new_y <= computed_y;
         target_out <= target;
-	end else begin
-		// if no clk_en, disable the pipeline
-		new_angle <= 22'b0;
-		new_x <= 22'b0;
-		new_y <= 22'b0;
 	end
+
 end
 
 

@@ -1,4 +1,4 @@
-module CORDIC(clk, rst, clk_en, angle_float, result, done);
+module CORDIC(clk, rst, clk_en, start, angle_float, result, done);
 
 
 
@@ -36,6 +36,7 @@ parameter DONE = 4'b0001;
 //IO Registers             
 input                               clk;
 input                               rst;
+input                               start;
 input                               clk_en;
 input      [FLOAT_DATA_WIDTH - 1:0] angle_float;
 output reg                          done;
@@ -197,7 +198,7 @@ always @(posedge clk) begin
         IDLE: begin //0000
             //do nothing unless clock begins
             done <= 1'b0; // reset done signal
-            if (clk_en) begin
+            if (clk_en && start) begin
 
                 //Shorting out 45 and 0 degrees
     

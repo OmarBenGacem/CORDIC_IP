@@ -1,4 +1,4 @@
-module cordic_frame (clk, clk_en, rst, target, result);
+module cordic_frame (clk, clk_en, rst, target, result, done);
 
 parameter CORDIC_ADDRESS_WIDTH = 4;
 parameter INTEGER_WIDTH = 2;
@@ -18,6 +18,7 @@ input                              rst;
 input                              clk_en;
 input       [DATA_WIDTH - 1 : 0 ]  target;
 output reg  [DATA_WIDTH - 1 : 0 ]  result;
+output reg                         done;
 
 
 reg         [DATA_WIDTH - 1 : 0 ]  initial_x;
@@ -413,22 +414,21 @@ cordic_stage  cordic_16 (
 
 
 
-
-
-
 initial begin
 
     initial_x <= x_default;   
     initial_y <= y_default;
     initial_angle <= angle_default;
     result <= 22'b0;
+    done <= 1'b0;
     
 
 end
 
 always @(posedge clk) begin
 
-    if (!clk_en || rst) begin
+    //if (!clk_en || rst) begin
+    if (rst) begin 
         //if clk_en goes low, disable the pipeline
         initial_x <= x_default;   
         initial_y <= y_default;
@@ -436,6 +436,7 @@ always @(posedge clk) begin
         
     end else begin
         result <= produced_result;
+        if (produced_target == target) begin done <= 1'b1; end else begin done <= 1'b0; end
     end
 
 end

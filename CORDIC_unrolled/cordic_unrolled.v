@@ -1,4 +1,4 @@
-module CORDIC_unrolled(clk, rst, clk_en, angle_float, result, done);
+module CORDIC_unrolled(clk, rst, start, clk_en, angle_float, result, done);
 
 
 
@@ -36,6 +36,7 @@ parameter DONE = 4'b0001;
 //IO Registers             
 input                               clk;
 input                               rst;
+input                               start;
 input                               clk_en;
 input      [FLOAT_DATA_WIDTH - 1:0] angle_float;
 output reg                          done;
@@ -61,7 +62,8 @@ reg  signed  [CORDIC_DATA_WIDTH - 1: 0]   cordic_output;
 
 wire         [FLOAT_DATA_WIDTH - 1:0]     result_flt;
 wire         [CORDIC_DATA_WIDTH - 1:0]    cordic_res;
-wire                                      counter_done;      
+wire                                      counter_done;  
+wire                                      counter_done_signal;      
 wire                                      cordic_done;    
 
 
@@ -93,6 +95,7 @@ delay stopper (
 		.done ( counter_done )
 );
 
+
 delay stopper_cordic (
 		.max  ( cordic_latency ),
 		.clk  ( clk ),
@@ -109,7 +112,8 @@ cordic_frame cordic_frame_instance (
     .clk_en     ( start_cordic ),
     .rst        ( rst ),
     .target     ( target ),
-    .result     ( cordic_res )
+    .result     ( cordic_res ),
+    .done       ( cordic_done_signal )
 
 );
 
@@ -137,7 +141,6 @@ always @(posedge clk) begin
     if (rst) begin
         state  <= IDLE;
 
-        state <= IDLE;
         result <= 22'b0;
         start_conversion <= 1'b0;
         counter_max <= CONVERSION_LATANCY;
@@ -152,11 +155,11 @@ always @(posedge clk) begin
 
     case(state)
 
-        IDLE: begin //0000
+        IDLE: begin //0000 = 0
             //do nothing unless clock begins
             done <= 1'b0; // reset done signal
-            if (clk_en) begin
-                
+            if (clk_en && start) begin
+
                 state <= CONVERTING;
                 start_conversion <= 1'b1;
                 delay_reset <= 1'b1; //start delay block
@@ -168,7 +171,7 @@ always @(posedge clk) begin
 
         end
 
-        CONVERTING: begin //0010
+        CONVERTING: begin //0010 = 2
             delay_reset <= 1'b0;
             if (counter_done) 
             begin state <= CORDIC_MAIN; 
@@ -181,7 +184,7 @@ always @(posedge clk) begin
         end
 
 
-        CORDIC_MAIN: begin //0111
+        CORDIC_MAIN: begin //0111 = 7
 
             cordic_reset <= 1'b0;
             if (cordic_done) begin
@@ -195,7 +198,7 @@ always @(posedge clk) begin
             
         end
 
-        CONVERTING_BACK: begin //0011
+        CONVERTING_BACK: begin //0011 = 3
             counter_max <= CONVERSION_LATANCY_REV;
             start_conversion <= 1'b1;
             delay_reset <= 1'b0; //start delay block
@@ -208,10 +211,12 @@ always @(posedge clk) begin
     
         end
 
-        DONE: begin //0001
+        DONE: begin //0001 = 1
             //need to convert back to floating point
-            if(!done) done <= 1'b1;  //adding an additional cycle to compensate for error in NIOS II Platform
-            if (done) state <= IDLE;
+            //if(!done) done <= 1'b1;  //adding an additional cycle to compensate for error in NIOS II Platform
+            //if (done) state <= IDLE;
+            done <= 1'b1;
+            state <= IDLE;
 
         end
 
