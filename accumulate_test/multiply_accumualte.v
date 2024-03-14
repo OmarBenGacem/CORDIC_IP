@@ -1,4 +1,4 @@
-module  mul_add(aclr, clk_en, start, clk, dataa, datab, result, done, n) ;
+module  mul_acc_test(aclr, clk_en, start, clk, dataa, datab, result, done, n) ;
 	//outputs result <= (dataa * datab) + datab;
 	parameter ADD_LATENCY = 7;
 	parameter MUL_LATENCY = 5;	
@@ -8,7 +8,7 @@ module  mul_add(aclr, clk_en, start, clk, dataa, datab, result, done, n) ;
 	parameter ADD_LATENCY_BIN = 10'b0000000111;
 	parameter DATA_WIDTH = 32;
 	parameter STATE_WIDTH = 3;
-    parameter N_WIDTH = 5;
+    parameter N_WIDTH = 2;
 	//parameter STARTING = {{STATE_WIDTH}{3'b000}};
 	//parameter WAITING_MUL = {STATE_WIDTH{3'b001}};
 	//parameter START_ADD = {STATE_WIDTH{3'b010}};
@@ -20,9 +20,9 @@ module  mul_add(aclr, clk_en, start, clk, dataa, datab, result, done, n) ;
 	parameter IDLE = 3'b111;
 	parameter DONE = 3'b100;
 	
-    parameter CLEAR = 5'b0;
-    parameter ADD = 5'b1;
-    parameter READ = 5'b2;
+    parameter CLEAR = 2'd0;
+    parameter ADD = 2'd1;
+    parameter READ = 2'd2;
 
 
     input                          start;
@@ -30,7 +30,6 @@ module  mul_add(aclr, clk_en, start, clk, dataa, datab, result, done, n) ;
     input      [N_WIDTH - 1 : 0]   n;
 	input   					   clk_en;
 	input   					   clk;
-	//input 						   rst;
 	input      [DATA_WIDTH - 1:0]  dataa;
 	input      [DATA_WIDTH - 1:0]  datab;
 	output reg [DATA_WIDTH - 1:0]  result;
@@ -81,6 +80,7 @@ module  mul_add(aclr, clk_en, start, clk, dataa, datab, result, done, n) ;
 		enable_add <= 1'b0;
 		enable_mul <= 1'b0;
 		delay_reset <= 1'b0;
+		out_reg <= 32'b0;
 	end
 
 
@@ -106,9 +106,9 @@ module  mul_add(aclr, clk_en, start, clk, dataa, datab, result, done, n) ;
 					enable_mul <= 1'b0;
 					delay_reset <= 1'b0;
 
-					if (clk_en == 1'b1 && start && n == ADD) state <= STARTING;
+					if (clk_en == 1'b1 && start && n == ADD) begin state <= STARTING; result <= 32'b0; end
                     if (clk_en == 1'b1 && start && n == READ) begin result <= out_reg; state <= DONE; end
-                    if (clk_en == 1'b1 && start && n == CLEAR) begin result <= out_reg; out_reg <= 32'b0; state <= DONE end
+                    if (clk_en == 1'b1 && start && n == CLEAR) begin result <= out_reg; out_reg <= 32'b0; state <= DONE; end
 
 				end
 			STARTING: begin //000
