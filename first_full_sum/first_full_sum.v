@@ -117,11 +117,11 @@ always@(posedge clk) begin
     end
 
     FLUSHING: begin
-
+        state <= IDLE;
     end
 
     DISPLAYING: begin
-
+        state <= IDLE
     end
 
     DONE: begin
