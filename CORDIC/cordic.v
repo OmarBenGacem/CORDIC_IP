@@ -111,14 +111,14 @@ Fixed_Add_Sub_signed addsub_x (
 Fixed_Add_Sub_signed addsub_y (
 	.dataa ( y ),
 	.datab ( shifted_x ),
-    .add_sub ( !(angle_greater_target) ), //1 for add, 0 for sun
+    .add_sub ( !(angle_greater_target) ), //1 for add, 0 for sub
 	.result ( new_y )
 );
 
 Fixed_Add_Sub_signed addsub_angle (
 	.dataa ( working_angle ),
 	.datab ( shift_value ),
-    .add_sub ( !(angle_greater_target) ), //1 for add, 0 for sun
+    .add_sub ( !(angle_greater_target) ), //1 for add, 0 for sub
 	.result ( new_angle )
 );
 
