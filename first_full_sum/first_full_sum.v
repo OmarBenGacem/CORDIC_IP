@@ -1,4 +1,4 @@
-module function_evaluation(clk, rst, clk_en, start, done, x_one, x_two, x_three, result, n);
+module function_evaluation(clk, rst, clk_en, start, done, x_one, x_two, result, n);
 
 //calculates 3 operands in parallel, as this is the most function arguments you can do in one go
 parameter FLT_DATA_WIDTH = 32;
@@ -22,7 +22,6 @@ input                                 clk_en;
 input                                 start;
 input       [FLT_DATA_WIDTH - 1 : 0]  x_one;
 input       [FLT_DATA_WIDTH - 1 : 0]  x_two;
-input       [FLT_DATA_WIDTH - 1 : 0]  x_three;
 input       [N_WIDTH - 1 : 0]         n;
 output reg  [FLT_DATA_WIDTH - 1 : 0]  result;
 output reg                            done;
@@ -43,15 +42,12 @@ reg [FLT_DATA_WIDTH - 1 : 0] sum;
 
 wire [FLT_DATA_WIDTH - 1 : 0] x_one_squared;
 wire [FLT_DATA_WIDTH - 1 : 0] x_two_squared;
-wire [FLT_DATA_WIDTH - 1 : 0] x_three_squared;
 
 wire [FLT_DATA_WIDTH - 1 : 0] x_one_halved;
 wire [FLT_DATA_WIDTH - 1 : 0] x_two_halved;
-wire [FLT_DATA_WIDTH - 1 : 0] x_three_halved;
 
 wire [CORDIC_DATA_WIDTH - 1 : 0] x_one_cordic;
 wire [CORDIC_DATA_WIDTH - 1 : 0] x_two_cordic;
-wire [CORDIC_DATA_WIDTH - 1 : 0] x_three_cordic;
 
 stage_1 first (
 
@@ -65,13 +61,10 @@ stage_1 first (
     .done               (stage_1_done),
     .out_one            (x_one_cordic),
     .out_two            (x_two_cordic),
-    .out_three          (x_three_cordic),
     .half_out_one       (x_one_halved),
     .half_out_two       (x_two_halved),
-    .half_out_three     (x_three_halved),
     .square_out_one     (x_one_squared),
-    .square_out_two     (x_two_squared),
-    .square_out_three   (x_three_squared)
+    .square_out_two     (x_two_squared)
 
 );
 

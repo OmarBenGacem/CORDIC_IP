@@ -33,7 +33,6 @@ module function_evaluation_tb ();
         .start          (start),
         .x_one          (dataa),
         .x_two          (datab),
-        .x_three        (datac),
 		.result         (result),
         .done  	        (done)
 	);
@@ -55,7 +54,6 @@ module function_evaluation_tb ();
         start <= 1'b0;
         dataa <= 32'b01000000101000000000000000000000; //5
         datab <= 32'b01000001001000000000000000000000; //10
-        datac <= 32'b01000001011100000000000000000000; //15
         n <= GO;
         
         

@@ -74,20 +74,6 @@ stage_one_part second (
 
 );
 
-stage_one_part third (
-
-    .clk         (clk),
-    .clk_en      (clk_en),
-    .rst         (pipeline_flush),
-    .start       (start),
-    .x           (x_one),
-    .half        (x_three_halfed),
-    .square      (x_three_suqared),
-    .x_to_cordic (x_three_to_cordic),
-    .done        (x_three_done)
-
-);
-
 
 initial begin
     
