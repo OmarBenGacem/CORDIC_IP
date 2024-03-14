@@ -32,8 +32,10 @@ disp(newline);
 
 fpr = fipref;
 fpr.NumberDisplay = 'bin';
-d = fi(a_cordic_angles_radians_float,1,22,21);
-disp(d);
+%d = fi(a_cordic_angles_radians_float,1,22,21);
+%disp(d);
+
+disp(fi([1], 1, 23, 20));
 
 
 
