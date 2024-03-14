@@ -52,16 +52,7 @@ fp_mul halfer(
 
 );
 
-fp_mul div_128 (
 
-    .aclr ( rst ),
-    .clk_en ( start_functions ),
-    .clock ( clk ),
-    .dataa ( x ),
-    .datab ( ONE_TWO_EIGHT ),
-    .result ( dived_128 )
-
-);
 
 fp_mul square (
 
