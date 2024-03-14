@@ -1,4 +1,4 @@
-module first_full_sum(clk, rst, clk_en, start, done, x_one, x_two, x_three, result, n);
+module function_evaluation(clk, rst, clk_en, start, done, x_one, x_two, x_three, result, n);
 
 //calculates 3 operands in parallel, as this is the most function arguments you can do in one go
 parameter FLT_DATA_WIDTH = 32;
