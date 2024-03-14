@@ -34,7 +34,7 @@ wire signed [CRD_DATA_WIDTH - 1 : 0] conv_to_add;
 wire counter_done;
 
 
-reg [STATE_WIDTH - 1 : 0] state
+reg [STATE_WIDTH - 1 : 0] state;
 reg [COUNTER_WIDTH - 1 : 0] counter_max; 
 reg start_functions;
 reg start_convert;
@@ -53,7 +53,7 @@ fp_mul halfer(
 
 
 
-fp_mul square (
+fp_mul square_unit (
 
     .aclr ( rst ),
     .clk_en ( start_functions ),
@@ -76,7 +76,7 @@ fp_to_10_14_fixed converter (
 
 );
 
-Fixed_Add_Sub_signed sub_one (
+addsub_24 sub_one (
 
     .add_sub  ( 1'b0 ), //1 for add, 0 for sub
     .dataa    ( conv_to_add ),
@@ -100,7 +100,7 @@ initial begin
     state <= IDLE;
     start_functions <= 1'b0;
     start_convert <= 1'b1;
-    counter_max <= MUL_LATENCY;
+    counter_max <= CONVERSION_LATANCY;
 
 end
 
@@ -111,7 +111,7 @@ always @(posedge clk) begin
 
     start_functions <= 1'b0;
     start_convert <= 1'b1;
-    counter_max <= MUL_LATENCY; 
+    counter_max <= CONVERSION_LATANCY; 
 
     end else begin
 
@@ -153,4 +153,4 @@ end
 
 
 
-endmodule;
+endmodule

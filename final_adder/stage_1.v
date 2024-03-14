@@ -2,8 +2,8 @@ module stage_1 (clk, clk_en, rst, start, x_one, x_two, x_three, done, out_one, o
 
 parameter FLT_DATA_WIDTH = 32;
 parameter CORDIC_DATA_WIDTH = 22;
-parameter IDLE <= 1'b0;
-parameter DONE <= 1'b1
+parameter IDLE = 1'b0;
+parameter DONE = 1'b1;
 
 
 input clk;
@@ -31,15 +31,15 @@ output reg square_out_three;
 
 wire                          x_one_done;
 wire [FLT_DATA_WIDTH - 1 : 0] x_one_halfed;
-wire [FLT_DATA_WIDTH - 1 : 0] x_one_suqared;
+wire [FLT_DATA_WIDTH - 1 : 0] x_one_squared;
 wire [FLT_DATA_WIDTH - 1 : 0] x_one_to_cordic;
 wire                          x_two_done;
 wire [FLT_DATA_WIDTH - 1 : 0] x_two_halfed;
-wire [FLT_DATA_WIDTH - 1 : 0] x_two_suqared;
+wire [FLT_DATA_WIDTH - 1 : 0] x_two_squared;
 wire [FLT_DATA_WIDTH - 1 : 0] x_two_to_cordic;
 wire                          x_three_done;
 wire [FLT_DATA_WIDTH - 1 : 0] x_three_halfed;
-wire [FLT_DATA_WIDTH - 1 : 0] x_three_suqared;
+wire [FLT_DATA_WIDTH - 1 : 0] x_three_squared;
 wire [FLT_DATA_WIDTH - 1 : 0] x_three_to_cordic;
 
 reg                           state;
@@ -54,7 +54,7 @@ stage_one_part first (
     .start       (start),
     .x           (x_one),
     .half        (x_one_halfed),
-    .square      (x_one_suqared),
+    .square      (x_one_squared),
     .x_to_cordic (x_one_to_cordic),
     .done        (x_one_done)
 
@@ -68,9 +68,23 @@ stage_one_part second (
     .start       (start),
     .x           (x_one),
     .half        (x_two_halfed),
-    .square      (x_two_suqared),
+    .square      (x_two_squared),
     .x_to_cordic (x_two_to_cordic),
     .done        (x_two_done)
+
+);
+
+stage_one_part third (
+
+    .clk         (clk),
+    .clk_en      (clk_en),
+    .rst         (pipeline_flush),
+    .start       (start),
+    .x           (x_one),
+    .half        (x_three_halfed),
+    .square      (x_three_squared),
+    .x_to_cordic (x_three_to_cordic),
+    .done        (x_three_done)
 
 );
 
@@ -90,7 +104,7 @@ always @(posedge clk) begin
     case(state)
 
         IDLE: begin
-            done <= 1'b0
+            done <= 1'b0;
             if (x_one_done && x_two_done && x_three_done) begin
 
                 state <= done;
@@ -98,9 +112,9 @@ always @(posedge clk) begin
                 out_one <= x_one_to_cordic;
                 out_two <= x_two_to_cordic;
                 out_three <= x_three_to_cordic;
-                half_out_one <= x_one_half;
-                half_out_two <= x_two_half;
-                half_out_three <= x_three_half;
+                half_out_one <= x_one_halfed;
+                half_out_two <= x_two_halfed;
+                half_out_three <= x_three_halfed;
                 square_out_one <= x_one_squared;
                 square_out_two <= x_two_squared;
                 square_out_three <= x_three_squared;

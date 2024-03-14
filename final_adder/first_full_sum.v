@@ -10,11 +10,11 @@ parameter CLEAR = 2'd0;
 parameter GO = 2'd1;
 parameter READ = 2'd2;
 
-parameter IDLE <= 3'000;
-parameter WORKING <= 3'b001;
-parameter FLUSHING <= 3'b010;
-parameter DISPLAYING <= 3'b011;
-parameter DONE <= 3'b111;
+parameter IDLE = 3'b000;
+parameter WORKING = 3'b001;
+parameter FLUSHING = 3'b010;
+parameter DISPLAYING = 3'b011;
+parameter DONE = 3'b111;
 
 input                                 clk;
 input                                 rst;
@@ -32,7 +32,7 @@ reg start_stage_3;
 
 wire stage_1_done;
 wire stage_2_done;
-wire stage_2_done;
+wire stage_3_done;
 
 reg [STATE_WIDTH - 1 : 0] state;
 reg [FLT_DATA_WIDTH - 1 : 0] sum;
@@ -57,7 +57,7 @@ stage_1 first (
     .start              (start_stage_1),
     .x_one              (x_one),
     .x_two              (x_two),
-    .x_three            (x_three),
+    .x_three            (32'b0),
     .done               (stage_1_done),
     .out_one            (x_one_cordic),
     .out_two            (x_two_cordic),
@@ -114,7 +114,7 @@ always@(posedge clk) begin
     end
 
     DISPLAYING: begin
-        state <= IDLE
+        state <= IDLE;
     end
 
     DONE: begin
