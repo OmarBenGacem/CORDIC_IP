@@ -202,10 +202,10 @@ always @(posedge clk) begin
 
                 //Shorting out 45 and 0 degrees
     
-                    if (angle_float == 32'b10111111010010010000111111011000 || angle_float == 32'b00111111010010010000111111011000 || angle_float == 32'b0) begin  
+                    if (angle_float == 32'b10111111010010010000111111011000 || angle_float == 32'b00111111010010010000111111011000 || angle_float == 32'b0 || angle_float == 32'b10000000000000000000000000000000) begin  
                         // short out 0 and +/-45 degrees
                         state <= DONE;                                                              
-                        result <= (angle_float == 32'b0) ? 32'b00111111100000000000000000000000 : 32'b00111111001101010000010011110011; 
+                        result <= (angle_float == 32'b0 || angle_float == 32'b10000000000000000000000000000000) ? 32'b00111111100000000000000000000000 : 32'b00111111001101010000010011110011; 
                     end else begin                
                         state <= CONVERTING;
                         start_conversion <= 1'b1;
