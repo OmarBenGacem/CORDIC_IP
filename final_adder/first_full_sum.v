@@ -16,6 +16,9 @@ parameter FLUSHING = 3'b010;
 parameter DISPLAYING = 3'b011;
 parameter DONE = 3'b111;
 
+parameter WAITING = 3'b000;
+parameter INPUT = 3'b001;
+
 input                                 clk;
 input                                 rst;
 input                                 clk_en;
@@ -39,6 +42,9 @@ wire stage_3_done;
 reg [STATE_WIDTH - 1 : 0] state;
 reg [FLT_DATA_WIDTH - 1 : 0] sum;
 reg [FLT_DATA_WIDTH - 1 : 0] first_x_halved;
+reg [FLT_DATA_WIDTH - 1 : 0] temp_value_container;
+reg [FLT_DATA_WIDTH - 1 : 0] temp_square_value_container;
+reg [STATE_WIDTH - 1 : 0]    state_context_two;
 
 //module stage_1 (clk, clk_en, rst, start, x_one, x_two, x_three, done, out_one, out_two, out_three, half_out_one, half_out_two, half_out_three, square_out_one, square_out_two, square_out_three);
 
@@ -57,6 +63,11 @@ wire [FLT_DATA_WIDTH - 1 : 0] squared_out_cordic;
 wire [CORDIC_DATA_WIDTH - 1 : 0] cordic_out; 
 wire cordic_data_valid;
 wire cordic_pipeline_cleared;
+reg start_stage_3;
+
+wire [FLT_DATA_WIDTH - 1 : 0] final_add_one;
+wire [FLT_DATA_WIDTH - 1 : 0] final_add_two;
+wire start_final_add;
 
 stage_1 first_stage (
 
@@ -94,11 +105,31 @@ stage_2 second_stage (
 
 );
 
+//stage_3(clk, clk_en, rst, start, result_one, one_squared, result_two, two_squared, to_add_one, to_add_two, done);
+stage_3 third_stage (
+
+    .clk            (clk),
+    .clk_en         (clk_en),
+    .rst            (rst),
+    .start          (start_stage_3),
+    .result_one     (temp__value_container),
+    .one_squared    (temp_square_value_container),
+    .result_two     (cordic_out),
+    .two_squared    (squared_out_cordic),
+    .to_add_one     (final_add_one),
+    .to_add_two     (final_add_two),
+    .done           (start_final_add)
+
+);
 
 initial begin
     sum <= 32'b0;
     state <= IDLE;
-    first_x_halved = 32'b0;
+    state_context_two <= WAITING;
+    first_x_halved <= 32'b0;
+    temp_value_container <= 32'b0;
+    temp_square_value_container <= 32'b0;
+    start_stage_3 <= 1'b0;
 
 end
 
@@ -153,6 +184,29 @@ always@(posedge clk) begin
     end
 
     default: state <= IDLE;
+
+    endcase
+
+
+
+    case (state_context_two) 
+
+        WAITING: begin
+            start_stage_3 <= 1'b0;
+            if (cordic_data_valid) begin
+                state_context_two <= INPUT;
+                temp_value_container <= cordic_out;
+                temp_square_value_container <= squared_out_cordic;
+                state_context_two <= INPUT;
+
+            end
+        end
+
+        INPUT: begin
+            start_stage_3 <= 1'b1;
+            state <= INPUT;
+
+        end
 
     endcase
 
