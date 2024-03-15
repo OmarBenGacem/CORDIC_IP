@@ -153,6 +153,8 @@ always@(posedge clk) begin
 
     endcase
 
+    //add x/2 to result subroutine
+
 end
 
 endmodule
