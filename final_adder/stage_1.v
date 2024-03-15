@@ -2,8 +2,10 @@ module stage_1 (clk, clk_en, rst, start, x_one, x_two, done, out_one, out_two, h
 
 parameter FLT_DATA_WIDTH = 32;
 parameter CORDIC_DATA_WIDTH = 22;
-parameter IDLE = 1'b0;
-parameter DONE = 1'b1;
+
+parameter IDLE = 2'b00;
+parameter WORKING = 2'b01;
+parameter DONE = 2'b11;
 
 
 input clk;
@@ -34,7 +36,7 @@ wire                          x_two_done;
 wire [FLT_DATA_WIDTH - 1 : 0] x_two_halfed;
 wire [FLT_DATA_WIDTH - 1 : 0] x_two_squared;
 wire [FLT_DATA_WIDTH - 1 : 0] x_two_to_cordic;
-reg                           state;
+reg  [1 : 0]                  state;
 reg                           pipeline_flush;
 
 
@@ -58,7 +60,7 @@ stage_one_part second (
     .clk_en      (clk_en),
     .rst         (pipeline_flush),
     .start       (start),
-    .x           (x_one),
+    .x           (x_two),
     .half        (x_two_halfed),
     .square      (x_two_squared),
     .x_to_cordic (x_two_to_cordic),
@@ -83,9 +85,9 @@ always @(posedge clk) begin
 
         IDLE: begin
             done <= 1'b0;
-            if (x_one_done && x_two_done && x_three_done) begin
+            if (x_one_done && x_two_done && clk_en) begin
 
-                state <= done;
+                state <= DONE;
                 pipeline_flush <= 1'b1;
                 out_one <= x_one_to_cordic;
                 out_two <= x_two_to_cordic;
@@ -98,9 +100,16 @@ always @(posedge clk) begin
 
         end
 
+        WORKING: begin
+
+        end    
+
+
         DONE: begin
             done <= 1'b1;
             state <= IDLE;
+
+
         end
 
     endcase
