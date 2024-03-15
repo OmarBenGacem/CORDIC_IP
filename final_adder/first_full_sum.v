@@ -32,6 +32,7 @@ reg start_stage_3;
 
 
 //stage 1 done is the done signal
+wire stage_1_done;
 wire stage_2_done;
 wire stage_3_done;
 
@@ -50,6 +51,12 @@ wire [FLT_DATA_WIDTH - 1 : 0] x_two_halved;
 wire [CORDIC_DATA_WIDTH - 1 : 0] x_one_cordic;
 wire [CORDIC_DATA_WIDTH - 1 : 0] x_two_cordic;
 
+
+wire [FLT_DATA_WIDTH - 1 : 0] squared_out_cordic;
+wire [CORDIC_DATA_WIDTH - 1 : 0] cordic_out; 
+wire cordic_data_valid;
+wire cordic_pipeline_cleared;
+
 stage_1 first_stage (
 
     .clk                (clk),
@@ -58,13 +65,31 @@ stage_1 first_stage (
     .start              (start_stage_1),
     .x_one              (x_one),
     .x_two              (x_two),
-    .done               (done),
+    .done               (stage_1_done),
     .out_one            (x_one_cordic),
     .out_two            (x_two_cordic),
     .half_out_one       (x_one_halved),
     .half_out_two       (x_two_halved),
     .square_out_one     (x_one_squared),
     .square_out_two     (x_two_squared)
+
+);
+
+//module stage_2(clk, clk_en, rst, x_one, x_two, start, pipeline_cleared, result, valid, squared_pipeline);
+stage_2 second_stage (
+
+    .clk                (clk),
+    .clk_en             (clk_en),
+    .rst                (rst),
+    .x_one              (x_one_cordic),
+    .x_two              (x_two_cordic),
+    .one_sq             (x_one_squared),
+    .two_sq             (x_two_squared),
+    .start              (stage_1_done),
+    .pipeline_cleared   (cordic_pipeline_cleared),
+    .result             (cordic_out),
+    .valid              (cordic_data_valid),
+    .squared_pipeline   (squared_out_cordic)
 
 );
 

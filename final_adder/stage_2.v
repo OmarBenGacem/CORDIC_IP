@@ -1,4 +1,4 @@
-module stage_2(clk, clk_en, rst, x_one, x_two, start, pipeline_cleared, result, valid, squared_pipeline);
+module stage_2(clk, clk_en, rst, x_one, x_two, one_sq, two_sq, start, pipeline_cleared, result, valid, squared_pipeline);
 
 parameter CORDIC_DATA_WIDTH = 22;
 parameter default_input = 32'b0;
@@ -13,7 +13,9 @@ input clk_en;
 input rst;
 input x_one;
 input x_two;
-input start
+input [FLOAT_DATA_WIDTH - 1 : 0] one_sq;
+input [FLOAT_DATA_WIDTH - 1 : 0] two_sq;
+input start;
 output reg pipeline_cleared;
 output reg [CORDIC_DATA_WIDTH - 1 : 0] result;
 output reg valid;
