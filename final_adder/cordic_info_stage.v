@@ -4,10 +4,12 @@ parameter INTEGER_WIDTH = 2;
 parameter DECIMAL_WIDTH = 20;
 parameter DATA_WIDTH = DECIMAL_WIDTH + INTEGER_WIDTH;
 parameter CORDIC_COUNTER_WIDTH = 4;
+parameter FLOAT_DATA_WIDTH = 32;
 
 
 input      		                                  clk;
 input 											  valid_in;
+input 		 	  [FLOAT_DATA_WIDTH - 1 : 0]      squared_in;
 input      		                                  clk_en;
 input      		  [DATA_WIDTH - 1 : 0]            target;
 input      		  [CORDIC_COUNTER_WIDTH - 1 : 0]  shift_value;
@@ -20,6 +22,7 @@ output reg signed [DATA_WIDTH - 1 : 0]            new_x;
 output reg signed [DATA_WIDTH - 1 : 0]            new_y;
 output reg        [DATA_WIDTH - 1 : 0]            target_out; //used so CORDIC values in the pipeline have memory of their target
 output reg										  valid_out;
+output reg 		  [FLOAT_DATA_WIDTH - 1 : 0]      squared_out;	
 
 wire signed  [DATA_WIDTH - 1: 0]  		   		  shifted_y;
 wire signed  [DATA_WIDTH - 1: 0]     			  shifted_x;
@@ -79,6 +82,7 @@ always @(posedge clk) begin
         new_y <= computed_y;
         target_out <= target;
 		valid_out <= valid_in;
+		squared_out <= squared_in;
 	end
 
 end

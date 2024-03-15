@@ -30,7 +30,8 @@ reg start_stage_1;
 reg start_stage_2;
 reg start_stage_3;
 
-wire stage_1_done;
+
+//stage 1 done is the done signal
 wire stage_2_done;
 wire stage_3_done;
 
@@ -57,7 +58,7 @@ stage_1 first_stage (
     .start              (start_stage_1),
     .x_one              (x_one),
     .x_two              (x_two),
-    .done               (stage_1_done),
+    .done               (done),
     .out_one            (x_one_cordic),
     .out_two            (x_two_cordic),
     .half_out_one       (x_one_halved),
