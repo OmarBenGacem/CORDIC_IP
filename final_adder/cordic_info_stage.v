@@ -1,4 +1,4 @@
-module cordic_info_stage(clk, clk_en, target, valid_in, shift_value, shift_angle, angle, x, y, new_angle, new_x, new_y, target_out, valid_out);
+module cordic_info_stage(clk, clk_en, target, valid_in, squared_in,  shift_value, shift_angle, angle, x, y, new_angle, new_x, new_y, target_out, valid_out, squared_out);
 
 parameter INTEGER_WIDTH = 2;
 parameter DECIMAL_WIDTH = 20;

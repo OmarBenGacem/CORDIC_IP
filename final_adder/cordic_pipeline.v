@@ -37,13 +37,137 @@ wire  [FLOAT_DATA_WIDTH - 1 : 0 ]  squared_out;
 wire                               pipeline_cleared_connection;
 
 
+
+wire signed  [DATA_WIDTH - 1 : 0 ]       angle_1_to_2;
+wire signed  [DATA_WIDTH - 1 : 0 ]       x_1_to_2;
+wire signed  [DATA_WIDTH - 1 : 0 ]       y_1_to_2;
+wire signed  [DATA_WIDTH - 1 : 0 ]       target_1_to_2;
+wire signed                              valid_1_to_2;
+wire signed  [FLOAT_DATA_WIDTH - 1 : 0]  squared_1_to_2;
+
+
+wire signed  [DATA_WIDTH - 1 : 0 ]       angle_2_to_3;
+wire signed  [DATA_WIDTH - 1 : 0 ]       x_2_to_3;
+wire signed  [DATA_WIDTH - 1 : 0 ]       y_2_to_3;
+wire signed  [DATA_WIDTH - 1 : 0 ]       target_2_to_3;
+wire signed                              valid_2_to_3;
+wire signed  [FLOAT_DATA_WIDTH - 1 : 0]  squared_2_to_3;
+
+
+wire signed  [DATA_WIDTH - 1 : 0 ]       angle_3_to_4;
+wire signed  [DATA_WIDTH - 1 : 0 ]       x_3_to_4;
+wire signed  [DATA_WIDTH - 1 : 0 ]       y_3_to_4;
+wire signed  [DATA_WIDTH - 1 : 0 ]       target_3_to_4;
+wire signed                              valid_3_to_4;
+wire signed  [FLOAT_DATA_WIDTH - 1 : 0]  squared_3_to_4;
+
+
+wire signed  [DATA_WIDTH - 1 : 0 ]       angle_4_to_5;
+wire signed  [DATA_WIDTH - 1 : 0 ]       x_4_to_5;
+wire signed  [DATA_WIDTH - 1 : 0 ]       y_4_to_5;
+wire signed  [DATA_WIDTH - 1 : 0 ]       target_4_to_5;
+wire signed                              valid_4_to_5;
+wire signed  [FLOAT_DATA_WIDTH - 1 : 0]  squared_4_to_5;
+
+
+wire signed  [DATA_WIDTH - 1 : 0 ]       angle_5_to_6;
+wire signed  [DATA_WIDTH - 1 : 0 ]       x_5_to_6;
+wire signed  [DATA_WIDTH - 1 : 0 ]       y_5_to_6;
+wire signed  [DATA_WIDTH - 1 : 0 ]       target_5_to_6;
+wire signed                              valid_5_to_6;
+wire signed  [FLOAT_DATA_WIDTH - 1 : 0]  squared_5_to_6;
+
+
+wire signed  [DATA_WIDTH - 1 : 0 ]       angle_6_to_7;
+wire signed  [DATA_WIDTH - 1 : 0 ]       x_6_to_7;
+wire signed  [DATA_WIDTH - 1 : 0 ]       y_6_to_7;
+wire signed  [DATA_WIDTH - 1 : 0 ]       target_6_to_7;
+wire signed                              valid_6_to_7;
+wire signed  [FLOAT_DATA_WIDTH - 1 : 0]  squared_6_to_7;
+
+
+wire signed  [DATA_WIDTH - 1 : 0 ]       angle_7_to_8;
+wire signed  [DATA_WIDTH - 1 : 0 ]       x_7_to_8;
+wire signed  [DATA_WIDTH - 1 : 0 ]       y_7_to_8;
+wire signed  [DATA_WIDTH - 1 : 0 ]       target_7_to_8;
+wire signed                              valid_7_to_8;
+wire signed  [FLOAT_DATA_WIDTH - 1 : 0]  squared_7_to_8;
+
+
+wire signed  [DATA_WIDTH - 1 : 0 ]       angle_8_to_9;
+wire signed  [DATA_WIDTH - 1 : 0 ]       x_8_to_9;
+wire signed  [DATA_WIDTH - 1 : 0 ]       y_8_to_9;
+wire signed  [DATA_WIDTH - 1 : 0 ]       target_8_to_9;
+wire signed                              valid_8_to_9;
+wire signed  [FLOAT_DATA_WIDTH - 1 : 0]  squared_8_to_9;
+
+
+wire signed  [DATA_WIDTH - 1 : 0 ]       angle_9_to_10;
+wire signed  [DATA_WIDTH - 1 : 0 ]       x_9_to_10;
+wire signed  [DATA_WIDTH - 1 : 0 ]       y_9_to_10;
+wire signed  [DATA_WIDTH - 1 : 0 ]       target_9_to_10;
+wire signed                              valid_9_to_10;
+wire signed  [FLOAT_DATA_WIDTH - 1 : 0]  squared_9_to_10;
+
+
+wire signed  [DATA_WIDTH - 1 : 0 ]       angle_10_to_11;
+wire signed  [DATA_WIDTH - 1 : 0 ]       x_10_to_11;
+wire signed  [DATA_WIDTH - 1 : 0 ]       y_10_to_11;
+wire signed  [DATA_WIDTH - 1 : 0 ]       target_10_to_11;
+wire signed                              valid_10_to_11;
+wire signed  [FLOAT_DATA_WIDTH - 1 : 0]  squared_10_to_11;
+
+
+wire signed  [DATA_WIDTH - 1 : 0 ]       angle_11_to_12;
+wire signed  [DATA_WIDTH - 1 : 0 ]       x_11_to_12;
+wire signed  [DATA_WIDTH - 1 : 0 ]       y_11_to_12;
+wire signed  [DATA_WIDTH - 1 : 0 ]       target_11_to_12;
+wire signed                              valid_11_to_12;
+wire signed  [FLOAT_DATA_WIDTH - 1 : 0]  squared_11_to_12;
+
+
+wire signed  [DATA_WIDTH - 1 : 0 ]       angle_12_to_13;
+wire signed  [DATA_WIDTH - 1 : 0 ]       x_12_to_13;
+wire signed  [DATA_WIDTH - 1 : 0 ]       y_12_to_13;
+wire signed  [DATA_WIDTH - 1 : 0 ]       target_12_to_13;
+wire signed                              valid_12_to_13;
+wire signed  [FLOAT_DATA_WIDTH - 1 : 0]  squared_12_to_13;
+
+
+wire signed  [DATA_WIDTH - 1 : 0 ]       angle_13_to_14;
+wire signed  [DATA_WIDTH - 1 : 0 ]       x_13_to_14;
+wire signed  [DATA_WIDTH - 1 : 0 ]       y_13_to_14;
+wire signed  [DATA_WIDTH - 1 : 0 ]       target_13_to_14;
+wire signed                              valid_13_to_14;
+wire signed  [FLOAT_DATA_WIDTH - 1 : 0]  squared_13_to_14;
+
+
+wire signed  [DATA_WIDTH - 1 : 0 ]       angle_14_to_15;
+wire signed  [DATA_WIDTH - 1 : 0 ]       x_14_to_15;
+wire signed  [DATA_WIDTH - 1 : 0 ]       y_14_to_15;
+wire signed  [DATA_WIDTH - 1 : 0 ]       target_14_to_15;
+wire signed                              valid_14_to_15;
+wire signed  [FLOAT_DATA_WIDTH - 1 : 0]  squared_14_to_15;
+
+
+wire signed  [DATA_WIDTH - 1 : 0 ]       angle_15_to_16;
+wire signed  [DATA_WIDTH - 1 : 0 ]       x_15_to_16;
+wire signed  [DATA_WIDTH - 1 : 0 ]       y_15_to_16;
+wire signed  [DATA_WIDTH - 1 : 0 ]       target_15_to_16;
+wire signed                              valid_15_to_16;
+wire signed  [FLOAT_DATA_WIDTH - 1 : 0]  squared_15_to_16;
+
+
+
+
 initial begin
 
     initial_x <= x_default;   
     initial_y <= y_default;
     initial_angle <= angle_default;
     result <= 22'b0;
-    done <= 1'b0;
+    squared <= squared_15_to_16;
+
     
 
 end
@@ -57,8 +181,6 @@ always @(posedge clk) begin
         initial_x <= x_default;   
         initial_y <= y_default;
         initial_angle <= angle_default;
-        initial_valid <= 1'b     0;
-        initial_squared <= 32'b0;
         
     end else begin
         result <= produced_result;
@@ -69,6 +191,9 @@ always @(posedge clk) begin
     end
 
 end
+
+
+
 
 cordic_info_stage  cordic_1 (
 
@@ -413,14 +538,13 @@ cordic_info_stage  cordic_16 (
 .x            ( x_15_to_16 ),
 .y            ( y_15_to_16 ),
 .new_angle    ( produced_angle ),
-.new_x        ( produced_x ),
+.new_x        ( produced_result ),
 .new_y        ( produced_y ),
 .target_out   ( produced_target ),
 .valid_out    ( valid_out ),
 .squared_out  ( squared_out )
 
 );
-
 
 
 

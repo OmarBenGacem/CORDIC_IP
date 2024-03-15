@@ -15,12 +15,12 @@ input start;
 input  [FLT_DATA_WIDTH - 1 : 0]  x_one;
 input  [FLT_DATA_WIDTH - 1 : 0]  x_two;
 output reg done;
-output reg out_one;
-output reg out_two;
-output reg half_out_one;
-output reg half_out_two;
-output reg square_out_one;
-output reg square_out_two;
+output reg [CORDIC_DATA_WIDTH - 1 : 0] out_one;
+output reg [CORDIC_DATA_WIDTH - 1 : 0] out_two;
+output reg  [FLT_DATA_WIDTH - 1 : 0] half_out_one;
+output reg  [FLT_DATA_WIDTH - 1 : 0] half_out_two;
+output reg  [FLT_DATA_WIDTH - 1 : 0] square_out_one;
+output reg  [FLT_DATA_WIDTH - 1 : 0] square_out_two;
 
 
 
@@ -31,11 +31,11 @@ output reg square_out_two;
 wire                          x_one_done;
 wire [FLT_DATA_WIDTH - 1 : 0] x_one_halfed;
 wire [FLT_DATA_WIDTH - 1 : 0] x_one_squared;
-wire [FLT_DATA_WIDTH - 1 : 0] x_one_to_cordic;
+wire [CORDIC_DATA_WIDTH - 1 : 0] x_one_to_cordic;
 wire                          x_two_done;
 wire [FLT_DATA_WIDTH - 1 : 0] x_two_halfed;
 wire [FLT_DATA_WIDTH - 1 : 0] x_two_squared;
-wire [FLT_DATA_WIDTH - 1 : 0] x_two_to_cordic;
+wire [CORDIC_DATA_WIDTH - 1 : 0] x_two_to_cordic;
 reg  [1 : 0]                  state;
 reg                           pipeline_flush;
 

@@ -11,8 +11,8 @@ parameter NEXT = 2'b01;
 input clk;
 input clk_en;
 input rst;
-input x_one;
-input x_two;
+input [CORDIC_DATA_WIDTH - 1 : 0] x_one;
+input [CORDIC_DATA_WIDTH - 1 : 0] x_two;
 input [FLOAT_DATA_WIDTH - 1 : 0] one_sq;
 input [FLOAT_DATA_WIDTH - 1 : 0] two_sq;
 input start;
@@ -65,12 +65,12 @@ always @(posedge clk) begin
         IDLE: begin
             
             if (start && clk_en) begin
-
+                enter_value <= 1'b1;
                 input_value <= x_one;
                 next_value <= x_two;
                 state <= NEXT;
                 
-            end
+            end 
 
         end
 
@@ -79,6 +79,7 @@ always @(posedge clk) begin
             input_value <= next_value;
             next_value <= default_input;
             state <= IDLE;
+            enter_value <= 1'b0;
 
         end
 
