@@ -71,7 +71,7 @@ stage_one_part second (
 
 
 initial begin
-    
+    done <= 1'b0;
     state <= IDLE;
 
 end
