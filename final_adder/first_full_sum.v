@@ -38,6 +38,7 @@ wire stage_3_done;
 
 reg [STATE_WIDTH - 1 : 0] state;
 reg [FLT_DATA_WIDTH - 1 : 0] sum;
+reg [FLT_DATA_WIDTH - 1 : 0] first_x_halved;
 
 //module stage_1 (clk, clk_en, rst, start, x_one, x_two, x_three, done, out_one, out_two, out_three, half_out_one, half_out_two, half_out_three, square_out_one, square_out_two, square_out_three);
 
@@ -97,6 +98,7 @@ stage_2 second_stage (
 initial begin
     sum <= 32'b0;
     state <= IDLE;
+    first_x_halved = 32'b0;
 
 end
 
@@ -128,6 +130,7 @@ always@(posedge clk) begin
 
         if (start_stage_1) start_stage_1 <= 1'b0;
         if (stage_1_done) begin
+            first_x_halved <= x_one_halved;
             state <= DONE;
             result <= 32'b0;
             
