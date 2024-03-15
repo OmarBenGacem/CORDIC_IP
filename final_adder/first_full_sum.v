@@ -49,7 +49,7 @@ wire [FLT_DATA_WIDTH - 1 : 0] x_two_halved;
 wire [CORDIC_DATA_WIDTH - 1 : 0] x_one_cordic;
 wire [CORDIC_DATA_WIDTH - 1 : 0] x_two_cordic;
 
-stage_1 first (
+stage_1 first_stage (
 
     .clk                (clk),
     .clk_en             (clk_en),
@@ -57,7 +57,6 @@ stage_1 first (
     .start              (start_stage_1),
     .x_one              (x_one),
     .x_two              (x_two),
-    .x_three            (32'b0),
     .done               (stage_1_done),
     .out_one            (x_one_cordic),
     .out_two            (x_two_cordic),
@@ -87,6 +86,7 @@ always@(posedge clk) begin
 
                 start_stage_1 <= 1'b1;
                 state <= WORKING;
+                
 
             end else if ( n == READ ) begin
                 
@@ -100,10 +100,11 @@ always@(posedge clk) begin
 
     WORKING: begin
 
-        start_stage_1 <= 1'b0;
+        if (start_stage_1) start_stage_1 <= 1'b0;
         if (stage_1_done) begin
             state <= DONE;
             result <= 32'b0;
+            
         end
 
 

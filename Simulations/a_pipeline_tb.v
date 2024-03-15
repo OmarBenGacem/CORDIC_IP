@@ -4,7 +4,6 @@ module function_evaluation_tb ();
 	//Inputs to DUT are reg type
 	reg [31:0] dataa;
     reg [31:0] datab;
-    reg [31:0] datac;
     wire done;
 	reg clk;
     reg start;
@@ -55,6 +54,9 @@ module function_evaluation_tb ();
         dataa <= 32'b01000000101000000000000000000000; //5
         datab <= 32'b01000001001000000000000000000000; //10
         n <= GO;
+		start <= 1'b1;
+
+		
         
         
 		
@@ -63,7 +65,10 @@ module function_evaluation_tb ();
 		@(posedge clk); 
 		                               
 		clk_en <= 1'b1;
-        start <= 1'b1;
+
+
+		#20
+		start <= 1'b0;
 
         #800
 		$display($time, "<< Simulation Complete >>");
