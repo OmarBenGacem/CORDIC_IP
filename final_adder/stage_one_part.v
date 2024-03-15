@@ -15,9 +15,9 @@ parameter CONVERTING = 2'b10;
 parameter DONE  = 2'b11;
 
 
-parameter HALF_DEFAULT_VALUE <= 32'b0;
-parameter SQUARED_DEFAULT_VALUE <= 32'b0;
-parameter CORDIC_DEFAULT_VALUE <= 32'b0;
+parameter HALF_DEFAULT_VALUE = 32'b0;
+parameter SQUARED_DEFAULT_VALUE = 32'b0;
+parameter CORDIC_DEFAULT_VALUE = 32'b0;
 
 input clk;
 input clk_en;
@@ -106,7 +106,7 @@ initial begin
     start_convert <= 1'b0;
     counter_max <= CONVERSION_LATANCY;
     half <= HALF_DEFAULT_VALUE;
-    squared <= SQUARED_DEFAULT_VALUE;
+    square <= SQUARED_DEFAULT_VALUE;
     x_to_cordic <= CORDIC_DEFAULT_VALUE;
     done <= 1'b0;
 

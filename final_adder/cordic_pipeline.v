@@ -27,8 +27,7 @@ output reg                               pipeline_cleared;
 
 reg         [DATA_WIDTH - 1 : 0 ]  initial_x;
 reg         [DATA_WIDTH - 1 : 0 ]  initial_y;
-reg         [DATA_WIDTH - 1 : 0 ]  initial_angle;  
-reg                                valid;      
+reg         [DATA_WIDTH - 1 : 0 ]  initial_angle;       
 wire signed [DATA_WIDTH - 1 : 0 ]  produced_result;
 wire signed [DATA_WIDTH - 1 : 0 ]  produced_angle;
 wire signed [DATA_WIDTH - 1 : 0 ]  produced_y;
@@ -58,7 +57,7 @@ always @(posedge clk) begin
         initial_x <= x_default;   
         initial_y <= y_default;
         initial_angle <= angle_default;
-        initial_valid <= 1'0;
+        initial_valid <= 1'b     0;
         initial_squared <= 32'b0;
         
     end else begin
@@ -88,7 +87,7 @@ cordic_info_stage  cordic_1 (
 .new_y        ( y_1_to_2 ),
 .target_out   ( target_1_to_2 ),
 .valid_out    ( valid_1_to_2 ),
-.squared_out  ( valid_1_to_2 ),
+.squared_out  ( valid_1_to_2 )
 
 );
 
@@ -110,7 +109,7 @@ cordic_info_stage  cordic_2 (
 .new_y        ( y_2_to_3 ),
 .target_out   ( target_2_to_3 ),
 .valid_out    ( valid_2_to_3 ),
-.squared_out  ( squared_2_to_3 ),
+.squared_out  ( squared_2_to_3 )
 
 );
 
@@ -132,7 +131,7 @@ cordic_info_stage  cordic_3 (
 .new_y        ( y_3_to_4 ),
 .target_out   ( target_3_to_4 ),
 .valid_out    ( valid_3_to_4 ),
-.squared_out  ( squared_3_to_4 ),
+.squared_out  ( squared_3_to_4 )
 
 );
 
@@ -154,7 +153,7 @@ cordic_info_stage  cordic_4 (
 .new_y        ( y_4_to_5 ),
 .target_out   ( target_4_to_5 ),
 .valid_out    ( valid_4_to_5 ),
-.squared_out  ( squared_4_to_5 ),
+.squared_out  ( squared_4_to_5 )
 
 );
 
@@ -176,7 +175,7 @@ cordic_info_stage  cordic_5 (
 .new_y        ( y_5_to_6 ),
 .target_out   ( target_5_to_6 ),
 .valid_out    ( valid_5_to_6 ),
-.squared_out  ( squared_5_to_6 ),
+.squared_out  ( squared_5_to_6 )
 
 );
 
@@ -198,7 +197,7 @@ cordic_info_stage  cordic_6 (
 .new_y        ( y_6_to_7 ),
 .target_out   ( target_6_to_7 ),
 .valid_out    ( valid_6_to_7 ),
-.squared_out  ( squared_6_to_7 ),
+.squared_out  ( squared_6_to_7 )
 
 );
 
@@ -220,7 +219,7 @@ cordic_info_stage  cordic_7 (
 .new_y        ( y_7_to_8 ),
 .target_out   ( target_7_to_8 ),
 .valid_out    ( valid_7_to_8 ),
-.squared_out  ( squared_7_to_8 ),
+.squared_out  ( squared_7_to_8 )
 
 );
 
@@ -242,7 +241,7 @@ cordic_info_stage  cordic_8 (
 .new_y        ( y_8_to_9 ),
 .target_out   ( target_8_to_9 ),
 .valid_out    ( valid_8_to_9 ),
-.squared_out  ( squared_8_to_9 ),
+.squared_out  ( squared_8_to_9 )
 
 );
 
@@ -264,7 +263,7 @@ cordic_info_stage  cordic_9 (
 .new_y        ( y_9_to_10 ),
 .target_out   ( target_9_to_10 ),
 .valid_out    ( valid_9_to_10 ),
-.squared_out  ( squared_9_to_10 ),
+.squared_out  ( squared_9_to_10 )
 
 );
 
@@ -286,7 +285,7 @@ cordic_info_stage  cordic_10 (
 .new_y        ( y_10_to_11 ),
 .target_out   ( target_10_to_11 ),
 .valid_out    ( valid_10_to_11 ),
-.squared_out  ( squared_10_to_11 ),
+.squared_out  ( squared_10_to_11 )
 
 );
 
@@ -308,7 +307,7 @@ cordic_info_stage  cordic_11 (
 .new_y        ( y_11_to_12 ),
 .target_out   ( target_11_to_12 ),
 .valid_out    ( valid_11_to_12 ),
-.squared_out  ( squared_11_to_12 ),
+.squared_out  ( squared_11_to_12 )
 
 );
 
@@ -330,7 +329,7 @@ cordic_info_stage  cordic_12 (
 .new_y        ( y_12_to_13 ),
 .target_out   ( target_12_to_13 ),
 .valid_out    ( valid_12_to_13 ),
-.squared_out  ( squared_12_to_13 ),
+.squared_out  ( squared_12_to_13 )
 
 );
 
@@ -352,7 +351,7 @@ cordic_info_stage  cordic_13 (
 .new_y        ( y_13_to_14 ),
 .target_out   ( target_13_to_14 ),
 .valid_out    ( valid_13_to_14 ),
-.squared_out  ( squared_13_to_14 ),
+.squared_out  ( squared_13_to_14 )
 
 );
 
@@ -374,7 +373,7 @@ cordic_info_stage  cordic_14 (
 .new_y        ( y_14_to_15 ),
 .target_out   ( target_14_to_15 ),
 .valid_out    ( valid_14_to_15 ),
-.squared_out  ( squared_14_to_15 ),
+.squared_out  ( squared_14_to_15 )
 
 );
 
@@ -396,7 +395,7 @@ cordic_info_stage  cordic_15 (
 .new_y        ( y_15_to_16 ),
 .target_out   ( target_15_to_16 ),
 .valid_out    ( valid_15_to_16 ),
-.squared_out  ( squared_15_to_16 ),
+.squared_out  ( squared_15_to_16 )
 
 );
 
@@ -418,7 +417,7 @@ cordic_info_stage  cordic_16 (
 .new_y        ( produced_y ),
 .target_out   ( produced_target ),
 .valid_out    ( valid_out ),
-.squared_out  ( squared_out ),
+.squared_out  ( squared_out )
 
 );
 

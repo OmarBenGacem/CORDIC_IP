@@ -4,8 +4,8 @@ parameter CORDIC_DATA_WIDTH = 22;
 parameter default_input = 32'b0;
 parameter FLOAT_DATA_WIDTH = 32;
 
-parameter IDLE <= 2'b00;
-parameter NEXT <= 2'b01;
+parameter IDLE = 2'b00;
+parameter NEXT = 2'b01;
 
 
 input clk;
@@ -49,14 +49,14 @@ cordic_pipeline cordic_stage(
 initial begin
     input_value <= default_input;
     next_value <= default_input;
-    enter_value <= 1'b0
+    enter_value <= 1'b0;
     state <= IDLE;
 end
 
 always @(posedge clk) begin
 
     result <= pipeline_out;
-    squared_pipeline <= squared_pipeline_wire
+    squared_pipeline <= squared_pipeline_wire;
     valid <= data_valid;
     pipeline_cleared <= pipeline_cleared_wire;
 
