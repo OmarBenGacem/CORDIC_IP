@@ -8,7 +8,7 @@ parameter STATE_WIDTH = 2;
 
 
 parameter CONVERSION_LATANCY = 10'b0000000011;
-parameter MULTIPLY_LATENCY = 10'b0000000011;
+parameter MULTIPLY_LATENCY = 10'b0000000100;
 
 
 parameter IDLE = 2'b00;
@@ -31,7 +31,17 @@ output reg                               done;
 output reg                               working;
 
 
-reg         [STATE_WIDTH - 1 : 0]       state;
+reg         [STATE_WIDTH - 1 : 0]       state_context_one;
+reg         [STATE_WIDTH - 1 : 0]       state_context_two;
+
+reg         [FLOAT_DATA_WIDTH - 1 : 0]  intermediate_one;
+reg         [FLOAT_DATA_WIDTH - 1 : 0]  intermediate_two;
+reg         [FLOAT_DATA_WIDTH - 1 : 0]  intermediate_one_squared;
+reg         [FLOAT_DATA_WIDTH - 1 : 0]  intermediate_two_squared;
+reg                                     context_one_working;
+reg                                     context_two_working;
+
+
 reg                                     start_convert;
 reg                                     start_multiply;
 reg                                     go_mult;
@@ -84,8 +94,8 @@ fp_mul x_one_mul (
     .aclr   (rst),
     .clk_en (start_multiply),
     .clock  (clk),
-    .dataa  (one_squared),
-    .datab  (cordic_one_float),
+    .dataa  (intermediate_one_squared),
+    .datab  (intermediate_one),
     .result (one_out)
 
 );
@@ -96,8 +106,8 @@ fp_mul x_two_mul (
     .aclr   (rst),
     .clk_en (start_multiply),
     .clock  (clk),
-    .dataa  (two_squared),
-    .datab  (cordic_two_float),
+    .dataa  (intermediate_two_squared),
+    .datab  (intermediate_two),
     .result (two_out)
 
 );
@@ -106,34 +116,40 @@ initial begin
 
     go_convert <= 1'b0;
     start_multiply <= 1'b0;
-    state <= IDLE;
+    state_context_one <= IDLE;
+    state_context_two <= IDLE;
     done <= 1'b0;
     to_add_one <= 32'b0;
     to_add_two <= 32'b0;
+    context_one_working <= 1'b0;
+    context_two_working <= 1'b0;
 
 end
 
 always @(posedge clk) begin
+
+    working <= context_one_working || context_two_working;
 
     if (rst) begin
     
     
     end else begin
 
-        case(state)
+        case(state_context_one)
 
             IDLE: begin
                 done <= 1'b0;
                 if (clk_en && start) begin
 
-                    state <= CONVERT;
+                    state_context_one <= CONVERT;
                     start_convert <= 1'b1;
                     go_convert <= 1'b1;
                     working <= 1'b1;
+                    context_one_working <= 1'b1;
 
                 end else begin
 
-                    working <= 1'b0;
+                    context_one_working <= 1'b0;
 
                 end
 
@@ -142,36 +158,56 @@ always @(posedge clk) begin
             CONVERT: begin
                 go_convert <= 1'b0;
                 if (convert_done) begin
-                    state <= MULTIPLY;
-                    go_convert <= 1'b0;
+                    state_context_one <= IDLE;
                     start_convert <= 1'b0;
-
                     go_mult <= 1'b1;
-                    start_multiply <= 1'b1;
+                    intermediate_one <= cordic_one_float;
+                    intermediate_two <= cordic_two_float;
+                    intermediate_one_squared <= one_squared;
+                    intermediate_one_squared <= two_squared;
+
                 end
 
             end
 
-            MULTIPLY: begin
-                go_mult <= 1'b0;
-                if (multiply_done) begin
+
+
+
+        endcase
+
+
+        case(state_context_two)
+
+        IDLE: begin
+            done <= 1'b0;
+            if (go_mult) begin
+                state_context_two <= MULTIPLY;
+                start_multiply <= 1'b1;
+                context_two_working <= 1'b1;
+
+            end else begin
+                context_two_working <= 1'b0;
+            end
+        end
+        
+        MULTIPLY: begin
+            done <= 1'b0;
+            go_mult <= 1'b0;
+            if (multiply_done) begin
                     
-                    state <= DONE;
-                    go_mult <= 1'b0;
-                    start_multiply <= 1'b0;
-                    to_add_one <= one_out;
-                    to_add_two <= two_out;
-
-                end
-
-            end
-
-            DONE: begin
+                state_context_two <= DONE;
+                go_mult <= 1'b0;
+                start_multiply <= 1'b0;
+                to_add_one <= one_out;
+                to_add_two <= two_out;
+                state_context_two <= IDLE;
                 done <= 1'b1;
-                state <= IDLE;
+
             end
+        end
 
 
+        default: state_context_two <= IDLE;
         endcase
 
     end
