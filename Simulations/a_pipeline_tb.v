@@ -70,6 +70,15 @@ module function_evaluation_tb ();
 		#20
 		start <= 1'b0;
 
+		#240
+		start <= 1'b1;
+		dataa <= 32'b01000001011100000000000000000000; //15
+        datab <= 32'b01000001101000000000000000000000; //20
+
+
+		#20
+		start <= 1'b0;
+
         #800
 		$display($time, "<< Simulation Complete >>");
 		$stop;

@@ -1,7 +1,7 @@
 module stage_2(clk, clk_en, rst, x_one, x_two, one_sq, two_sq, start, pipeline_cleared, result, valid, squared_pipeline);
 
 parameter CORDIC_DATA_WIDTH = 22;
-parameter default_input = 32'b0;
+parameter default_input = 22'b0;
 parameter FLOAT_DATA_WIDTH = 32;
 
 parameter IDLE = 2'b00;
@@ -23,6 +23,8 @@ output reg [FLOAT_DATA_WIDTH - 1 : 0] squared_pipeline;
 
 reg [CORDIC_DATA_WIDTH - 1 : 0] input_value;
 reg [CORDIC_DATA_WIDTH - 1 : 0] next_value;
+reg [FLOAT_DATA_WIDTH - 1 : 0] input_square;
+reg [FLOAT_DATA_WIDTH - 1 : 0] next_square;
 reg [1 : 0]                     state;
 reg                             enter_value;
 wire [CORDIC_DATA_WIDTH - 1 : 0] pipeline_out;
@@ -39,6 +41,7 @@ cordic_pipeline cordic_stage(
     .clk_en             (clk_en),
     .target             (input_value),
     .start              (enter_value),
+    .square_value       (input_square),
     .result             (pipeline_out),
     .squared            (squared_pipeline_wire),
     .valid              (data_valid),
@@ -49,6 +52,7 @@ cordic_pipeline cordic_stage(
 initial begin
     input_value <= default_input;
     next_value <= default_input;
+    next_square <= default_input;
     enter_value <= 1'b0;
     state <= IDLE;
 end
@@ -68,6 +72,8 @@ always @(posedge clk) begin
                 enter_value <= 1'b1;
                 input_value <= x_one;
                 next_value <= x_two;
+                input_square <= one_sq;
+                next_square <= two_sq;
                 state <= NEXT;
                 
             end 
@@ -77,6 +83,7 @@ always @(posedge clk) begin
         NEXT: begin
             
             input_value <= next_value;
+            input_square <= next_square;
             next_value <= default_input;
             state <= IDLE;
             enter_value <= 1'b0;

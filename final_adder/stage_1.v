@@ -1,4 +1,4 @@
-module stage_1 (clk, clk_en, rst, start, x_one, x_two, done, out_one, out_two, half_out_one, half_out_two, square_out_one, square_out_two);
+module stage_1 (clk, clk_en, rst, start, x_one, x_two, done, out_one, out_two, half_out_one, half_out_two, square_out_one, square_out_two, working);
 
 parameter FLT_DATA_WIDTH = 32;
 parameter CORDIC_DATA_WIDTH = 22;
@@ -38,14 +38,14 @@ wire [FLT_DATA_WIDTH - 1 : 0] x_two_halfed;
 wire [FLT_DATA_WIDTH - 1 : 0] x_two_squared;
 wire [CORDIC_DATA_WIDTH - 1 : 0] x_two_to_cordic;
 reg  [1 : 0]                  state;
-reg                           pipeline_flush;
+
 
 
 stage_one_part first (
 
     .clk         (clk),
     .clk_en      (clk_en),
-    .rst         (pipeline_flush),
+    .rst         (rst),
     .start       (start),
     .x           (x_one),
     .half        (x_one_halfed),
@@ -59,7 +59,7 @@ stage_one_part second (
 
     .clk         (clk),
     .clk_en      (clk_en),
-    .rst         (pipeline_flush),
+    .rst         (rst),
     .start       (start),
     .x           (x_two),
     .half        (x_two_halfed),
@@ -89,7 +89,6 @@ always @(posedge clk) begin
             if (x_one_done && x_two_done && clk_en) begin
 
                 state <= DONE;
-                pipeline_flush <= 1'b1;
                 out_one <= x_one_to_cordic;
                 out_two <= x_two_to_cordic;
                 half_out_one <= x_one_halfed;

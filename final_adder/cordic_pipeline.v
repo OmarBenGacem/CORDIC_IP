@@ -1,4 +1,4 @@
-module cordic_pipeline (clk, rst, clk_en, target, start, result, squared, valid, pipeline_cleared);
+module cordic_pipeline (clk, rst, clk_en, target, start, square_value, result, squared, valid, pipeline_cleared);
 
 parameter CORDIC_ADDRESS_WIDTH = 4;
 parameter INTEGER_WIDTH = 2;
@@ -10,12 +10,14 @@ parameter FLOAT_DATA_WIDTH = 32;
 parameter x_default = 22'b0010011011011101001110; //20 fractional bits
 parameter y_default = 22'b0;
 parameter angle_default = 22'b0;
+parameter default_32 = 32'b0;
 
 input                                    clk;
 input                                    rst;
 input                                    clk_en;
 input       [DATA_WIDTH - 1 : 0 ]        target;
 input                                    start;
+input       [FLOAT_DATA_WIDTH - 1 : 0 ]  square_value;
 output reg  [DATA_WIDTH - 1 : 0 ]        result;
 output reg  [FLOAT_DATA_WIDTH - 1 : 0 ]  squared;
 output reg                               valid;
@@ -166,7 +168,7 @@ initial begin
     initial_y <= y_default;
     initial_angle <= angle_default;
     result <= 22'b0;
-    squared <= squared_15_to_16;
+    squared <= default_32;
 
     
 
@@ -204,7 +206,7 @@ cordic_info_stage  cordic_1 (
 .clk_en       ( clk_en ),
 .target       ( target ),
 .valid_in     ( start ),
-.squared_in   ( squared_in ),
+.squared_in   ( square_value ),
 .shift_value  ( 4'b0000 ),
 .shift_angle  ( 22'b0011001001000011111101 ),
 .angle        ( initial_angle ),
@@ -215,7 +217,7 @@ cordic_info_stage  cordic_1 (
 .new_y        ( y_1_to_2 ),
 .target_out   ( target_1_to_2 ),
 .valid_out    ( valid_1_to_2 ),
-.squared_out  ( valid_1_to_2 )
+.squared_out  ( squared_1_to_2 )
 
 );
 

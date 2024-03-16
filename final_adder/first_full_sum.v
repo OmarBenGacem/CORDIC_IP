@@ -17,7 +17,7 @@ parameter DISPLAYING = 3'b011;
 parameter DONE = 3'b111;
 
 parameter WAITING = 3'b000;
-parameter INPUT = 3'b001;
+parameter INPUTING = 3'b001;
 
 parameter WAITING_FOR_HALF_VALUES = 3'b000;
 parameter HALF_VALUES_ADDED = 3'b001;
@@ -43,7 +43,7 @@ wire stage_1_done;
 wire stage_2_done;
 wire stage_3_done;
 
-reg [STATE_WIDTH - 1 : 0] state;
+reg [STATE_WIDTH - 1 : 0]    state;
 reg [FLT_DATA_WIDTH - 1 : 0] sum_one;
 reg [FLT_DATA_WIDTH - 1 : 0] sum_two;
 reg [FLT_DATA_WIDTH - 1 : 0] first_x_halved;
@@ -68,7 +68,7 @@ wire [CORDIC_DATA_WIDTH - 1 : 0] x_two_cordic;
 wire [FLT_DATA_WIDTH - 1 : 0] squared_out_cordic;
 wire [CORDIC_DATA_WIDTH - 1 : 0] cordic_out; 
 wire cordic_data_valid;
-reg start_stage_3;
+
 
 wire [FLT_DATA_WIDTH - 1 : 0] final_add_one;
 wire [FLT_DATA_WIDTH - 1 : 0] final_add_two;
@@ -252,23 +252,20 @@ always@(posedge clk) begin
 
 
 
-
     case (state_context_two) 
 
-        WAITING: begin
+        WAITING: begin // 0
             start_stage_3 <= 1'b0;
             if (cordic_data_valid) begin
-                state_context_two <= INPUT;
+                state_context_two <= INPUTING;
                 temp_value_container <= cordic_out;
                 temp_square_value_container <= squared_out_cordic;
-                state_context_two <= INPUT;
-
             end
         end
 
-        INPUT: begin
+        INPUTING: begin // 1
             start_stage_3 <= 1'b1;
-            state <= INPUT;
+            state_context_two <= WAITING;
 
         end
 

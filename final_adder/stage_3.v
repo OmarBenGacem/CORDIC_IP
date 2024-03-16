@@ -1,13 +1,14 @@
-module stage_3(clk, clk_en, rst, start, result_one, one_squared, result_two, two_squared, to_add_one, to_add_two, done);
+module stage_3(clk, clk_en, rst, start, result_one, one_squared, result_two, two_squared, to_add_one, to_add_two, done, working);
 
 parameter FLOAT_DATA_WIDTH = 32;
 parameter INTEGER_WIDTH = 2;
 parameter FRACTIONAL_WIDTH = 20;
 parameter CORDIC_DATA_WIDTH = INTEGER_WIDTH + FRACTIONAL_WIDTH;
+parameter STATE_WIDTH = 2;
 
 
-parameter CONVERSION_LATANCY = 10'b0000000100;
-parameter MULTIPLY_LATENCY = 10'b0000000110;
+parameter CONVERSION_LATANCY = 10'b0000000011;
+parameter MULTIPLY_LATENCY = 10'b0000000011;
 
 
 parameter IDLE = 2'b00;
@@ -30,7 +31,7 @@ output reg                               done;
 output reg                               working;
 
 
-reg                                     state;
+reg         [STATE_WIDTH - 1 : 0]       state;
 reg                                     start_convert;
 reg                                     start_multiply;
 reg                                     go_mult;
@@ -46,7 +47,7 @@ wire       [FLOAT_DATA_WIDTH - 1 : 0]   two_out;
 delay stopper_convert (
 		.max  ( CONVERSION_LATANCY ),
 		.clk  ( clk ),
-		.rst  ( start_convert ),
+		.rst  ( go_convert ),
 		.done ( convert_done )
 );
 
@@ -61,20 +62,20 @@ FIXED_Convert_twos_comp converter_fixed_fp_one (
 
     .clock      (clk),
     .aclr       (rst),
-    .clk_en     (go_convert),
+    .clk_en     (start_convert),
     .dataa      (result_one),
-    .results    (cordic_one_float)
+    .result     (cordic_one_float)
 
 );
 
 
-FIXED_Convert_twos_comp converter_fixed_fp_one (
+FIXED_Convert_twos_comp converter_fixed_fp_two (
 
     .clock      (clk),
     .aclr       (rst),
     .clk_en     (start_convert),
-    .dataa      (result_one),
-    .results    (cordic_two_float)
+    .dataa      (result_two),
+    .result     (cordic_two_float)
 
 );
 
@@ -107,6 +108,8 @@ initial begin
     start_multiply <= 1'b0;
     state <= IDLE;
     done <= 1'b0;
+    to_add_one <= 32'b0;
+    to_add_two <= 32'b0;
 
 end
 
@@ -120,7 +123,7 @@ always @(posedge clk) begin
         case(state)
 
             IDLE: begin
-                
+                done <= 1'b0;
                 if (clk_en && start) begin
 
                     state <= CONVERT;
@@ -152,8 +155,8 @@ always @(posedge clk) begin
             MULTIPLY: begin
                 go_mult <= 1'b0;
                 if (multiply_done) begin
-                    done <= 1'b1;
-                    state <= IDLE;
+                    
+                    state <= DONE;
                     go_mult <= 1'b0;
                     start_multiply <= 1'b0;
                     to_add_one <= one_out;
@@ -164,7 +167,7 @@ always @(posedge clk) begin
             end
 
             DONE: begin
-                done <= 1'b0;
+                done <= 1'b1;
                 state <= IDLE;
             end
 
