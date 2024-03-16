@@ -21,6 +21,7 @@ output reg  [FLT_DATA_WIDTH - 1 : 0] half_out_one;
 output reg  [FLT_DATA_WIDTH - 1 : 0] half_out_two;
 output reg  [FLT_DATA_WIDTH - 1 : 0] square_out_one;
 output reg  [FLT_DATA_WIDTH - 1 : 0] square_out_two;
+output reg                           working;
 
 
 
@@ -95,7 +96,10 @@ always @(posedge clk) begin
                 half_out_two <= x_two_halfed;
                 square_out_one <= x_one_squared;
                 square_out_two <= x_two_squared;
+                working <= 1'b1;
 
+            end else begin
+                working <= 1'b0;
             end
 
         end

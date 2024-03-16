@@ -19,6 +19,10 @@ parameter DONE = 3'b111;
 parameter WAITING = 3'b000;
 parameter INPUT = 3'b001;
 
+parameter WAITING_FOR_HALF_VALUES = 3'b000;
+parameter HALF_VALUES_ADDED = 3'b001;
+
+
 input                                 clk;
 input                                 rst;
 input                                 clk_en;
@@ -40,11 +44,13 @@ wire stage_2_done;
 wire stage_3_done;
 
 reg [STATE_WIDTH - 1 : 0] state;
-reg [FLT_DATA_WIDTH - 1 : 0] sum;
+reg [FLT_DATA_WIDTH - 1 : 0] sum_one;
+reg [FLT_DATA_WIDTH - 1 : 0] sum_two;
 reg [FLT_DATA_WIDTH - 1 : 0] first_x_halved;
 reg [FLT_DATA_WIDTH - 1 : 0] temp_value_container;
 reg [FLT_DATA_WIDTH - 1 : 0] temp_square_value_container;
 reg [STATE_WIDTH - 1 : 0]    state_context_two;
+//reg [STATE_WIDTH - 1 : 0]    state_short;
 
 //module stage_1 (clk, clk_en, rst, start, x_one, x_two, x_three, done, out_one, out_two, out_three, half_out_one, half_out_two, half_out_three, square_out_one, square_out_two, square_out_three);
 
@@ -62,12 +68,28 @@ wire [CORDIC_DATA_WIDTH - 1 : 0] x_two_cordic;
 wire [FLT_DATA_WIDTH - 1 : 0] squared_out_cordic;
 wire [CORDIC_DATA_WIDTH - 1 : 0] cordic_out; 
 wire cordic_data_valid;
-wire cordic_pipeline_cleared;
 reg start_stage_3;
 
 wire [FLT_DATA_WIDTH - 1 : 0] final_add_one;
 wire [FLT_DATA_WIDTH - 1 : 0] final_add_two;
 wire start_final_add;
+
+wire [FLT_DATA_WIDTH - 1 : 0] shorted_new_sum_1;
+wire [FLT_DATA_WIDTH - 1 : 0] shorted_new_sum_2;
+wire                          half_short_complete;
+wire [FLT_DATA_WIDTH - 1 : 0] full_pipeline_new_sum_1;
+wire [FLT_DATA_WIDTH - 1 : 0] full_pipeline_new_sum_2;
+wire                          full_pipeine_complete;
+
+wire                          pipeline_stage_1_in_use;
+wire                          cordic_pipeline_cleared;
+wire                          pipeline_stage_3_in_use;
+wire                          pipeline_stage_4_in_use;
+wire                          shorting_stage_4_in_use;
+
+wire pipeline_empty;
+
+assign pipeline_empty = !( pipeline_stage_1_in_use || cordic_pipeline_cleared || pipeline_stage_3_in_use || pipeline_stage_4_in_use || shorting_stage_4_in_use );
 
 stage_1 first_stage (
 
@@ -83,7 +105,8 @@ stage_1 first_stage (
     .half_out_one       (x_one_halved),
     .half_out_two       (x_two_halved),
     .square_out_one     (x_one_squared),
-    .square_out_two     (x_two_squared)
+    .square_out_two     (x_two_squared),
+    .working            (pipeline_stage_1_in_use)
 
 );
 
@@ -112,24 +135,64 @@ stage_3 third_stage (
     .clk_en         (clk_en),
     .rst            (rst),
     .start          (start_stage_3),
-    .result_one     (temp__value_container),
+    .result_one     (temp_value_container),
     .one_squared    (temp_square_value_container),
     .result_two     (cordic_out),
     .two_squared    (squared_out_cordic),
     .to_add_one     (final_add_one),
     .to_add_two     (final_add_two),
-    .done           (start_final_add)
+    .done           (start_final_add),
+    .working        (pipeline_stage_3_in_use)
 
 );
 
+
+//module stage_4(clk, rst, clk_en, start, val_1, val_2, current_val_1, current_val_2, new_val_1, new_val_2, done);
+stage_4 fourth_stage (
+
+    .clk            (clk),
+    .rst            (rst),
+    .clk_en         (clk_en),
+    .start          (start_final_add),
+    .val_1          (sum_one),
+    .val_2          (sum_two),
+    .current_val_1  (final_add_one),
+    .current_val_2  (final_add_two),
+    .new_val_1      (full_pipeline_new_sum_1),
+    .new_val_2      (full_pipeline_new_sum_2),
+    .done           (full_pipeine_complete),
+    .working        (pipeline_stage_4_in_use)
+
+);
+
+stage_4 short_x_div_2 (
+
+    .clk            (clk),
+    .rst            (rst),
+    .clk_en         (clk_en),
+    .start          (stage_1_done),
+    .val_1          (sum_one),
+    .val_2          (sum_two),
+    .current_val_1  (x_one_halved),
+    .current_val_2  (x_two_halved),
+    .new_val_1      (shorted_new_sum_1),
+    .new_val_2      (shorted_new_sum_2),
+    .done           (half_short_complete),
+    .working        (shorting_stage_4_in_use)
+
+);
+
+
 initial begin
-    sum <= 32'b0;
+    sum_one <= 32'b0;
+    sum_two <= 32'b0;
     state <= IDLE;
     state_context_two <= WAITING;
     first_x_halved <= 32'b0;
     temp_value_container <= 32'b0;
     temp_square_value_container <= 32'b0;
     start_stage_3 <= 1'b0;
+    //state_short <= WAITING_FOR_HALF_VALUES;
 
 end
 
@@ -189,6 +252,7 @@ always@(posedge clk) begin
 
 
 
+
     case (state_context_two) 
 
         WAITING: begin
@@ -208,10 +272,40 @@ always@(posedge clk) begin
 
         end
 
+        default: state_context_two <= WAITING;
+
     endcase
 
     //add x/2 to result subroutine
 
+    if (half_short_complete) begin
+
+        sum_one <= shorted_new_sum_1;
+        sum_two <= shorted_new_sum_2;
+
+    end
+
+    if (full_pipeine_complete) begin
+
+        sum_one <= full_pipeline_new_sum_1;
+        sum_two <= full_pipeline_new_sum_2;
+
+    end
+/*
+    case (state_short)
+
+        WAITING_FOR_HALF_VALUES: begin
+
+        end
+
+        HALF_VALUES_ADDED: begin
+
+        end
+
+        default: state_short <= WAITING_FOR_HALF_VALUES
+
+    endcase
+*/
 end
 
 endmodule

@@ -171,7 +171,10 @@ initial begin
     
 
 end
-assign pipeline_cleared_connection = !(valid_1_to_2 && valid_2_to_3 && valid_3_to_4 && valid_4_to_5 && valid_5_to_6 && valid_6_to_7 && valid_7_to_8 && valid_8_to_9 && valid_9_to_10 && valid_10_to_11 && valid_11_to_12 && valid_12_to_13 && valid_13_to_14 && valid_14_to_15 && valid_15_to_16 && valid_out);
+
+
+assign pipeline_cleared_connection = !(valid_1_to_2 || valid_2_to_3 || valid_3_to_4 || valid_4_to_5 || valid_5_to_6 || valid_6_to_7 || valid_7_to_8 || valid_8_to_9 || valid_9_to_10 || valid_10_to_11 || valid_11_to_12 || valid_12_to_13 || valid_13_to_14 || valid_14_to_15 || valid_15_to_16 || valid_out);
+
 
 always @(posedge clk) begin
 
