@@ -72,11 +72,9 @@ wire [FLT_DATA_WIDTH - 1 : 0] final_add_one;
 wire [FLT_DATA_WIDTH - 1 : 0] final_add_two;
 wire start_final_add;
 
-wire [FLT_DATA_WIDTH - 1 : 0] shorted_new_sum_1;
-wire [FLT_DATA_WIDTH - 1 : 0] shorted_new_sum_2;
+wire [FLT_DATA_WIDTH - 1 : 0] shorted_new_sum;
 wire                          half_short_complete;
-wire [FLT_DATA_WIDTH - 1 : 0] full_pipeline_new_sum_1;
-wire [FLT_DATA_WIDTH - 1 : 0] full_pipeline_new_sum_2;
+wire [FLT_DATA_WIDTH - 1 : 0] full_pipeline_new_sum;
 wire                          full_pipeine_complete;
 
 wire                          pipeline_stage_1_in_use;
@@ -145,19 +143,17 @@ stage_3 third_stage (
 );
 
 
-//module stage_4(clk, rst, clk_en, start, val_1, val_2, current_val_1, current_val_2, new_val_1, new_val_2, done);
+//module stage_4(clk, rst, clk_en, start, current_total, to_add_one, to_add_two, new_total, done, working);
 stage_4 fourth_stage (
 
     .clk            (clk),
     .rst            (rst),
     .clk_en         (clk_en),
     .start          (start_final_add),
-    .val_1          (half_sum),
-    .val_2          (cos_sum),
-    .current_val_1  (final_add_one),
-    .current_val_2  (final_add_two),
-    .new_val_1      (full_pipeline_new_sum_1),
-    .new_val_2      (full_pipeline_new_sum_2),
+    .curent_total   (cos_sum),
+    .to_add_one     (final_add_one),
+    .to_add_two     (final_add_two),
+    .new_total      (full_pipeline_new_sum),
     .done           (full_pipeine_complete),
     .working        (pipeline_stage_4_in_use)
 
@@ -169,12 +165,10 @@ stage_4 short_x_div_2 (
     .rst            (rst),
     .clk_en         (clk_en),
     .start          (stage_1_done),
-    .val_1          (half_sum),
-    .val_2          (cos_sum),
-    .current_val_1  (x_one_halved),
-    .current_val_2  (x_two_halved),
-    .new_val_1      (shorted_new_sum_1),
-    .new_val_2      (shorted_new_sum_2),
+    .curent_total   (half_sum),
+    .to_add_one     (x_one_halved),
+    .to_add_two     (x_one_halved),
+    .new_total      (shorted_new_sum),
     .done           (half_short_complete),
     .working        (shorting_stage_4_in_use)
 
@@ -274,16 +268,13 @@ always@(posedge clk) begin
     //add x/2 to result subroutine
 
     if (half_short_complete) begin
-
-        half_sum <= shorted_new_sum_1;
-        cos_sum <= shorted_new_sum_2;
+        half_sum <= shorted_new_sum;
 
     end
 
     if (full_pipeine_complete) begin
 
-        half_sum <= full_pipeline_new_sum_1;
-        cos_sum <= full_pipeline_new_sum_2;
+        cos_sum <= full_pipeline_new_sum;
 
     end
 /*

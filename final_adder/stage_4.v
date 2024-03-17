@@ -1,4 +1,4 @@
-module stage_4(clk, rst, clk_en, start, val_1, val_2, current_val_1, current_val_2, new_val_1, new_val_2, done, working);
+module stage_4(clk, rst, clk_en, start, current_total, to_add_one, to_add_two, new_total, done, working);
 
 parameter IDLE = 2'b00;
 parameter ADD_ONE = 2'b01;
@@ -14,20 +14,25 @@ input                                   clk;
 input                                   rst;
 input                                   clk_en;
 input                                   start;
-input       [FLOAT_DATA_WIDTH - 1 : 0]  val_1;
-input       [FLOAT_DATA_WIDTH - 1 : 0]  val_2;
-input       [FLOAT_DATA_WIDTH - 1 : 0]  current_val_1;
-input       [FLOAT_DATA_WIDTH - 1 : 0]  current_val_2;
-output reg  [FLOAT_DATA_WIDTH - 1 : 0]  new_val_1;
-output reg  [FLOAT_DATA_WIDTH - 1 : 0]  new_val_2;
+input       [FLOAT_DATA_WIDTH - 1 : 0]  current_total;
+input       [FLOAT_DATA_WIDTH - 1 : 0]  to_add_one;
+input       [FLOAT_DATA_WIDTH - 1 : 0]  to_add_two;
+output reg  [FLOAT_DATA_WIDTH - 1 : 0]  new_total;
 output reg                              done;
 output reg                              working;
 
-reg         [STATE_WIDTH - 1 : 0]       state;
+reg         [FLOAT_DATA_WIDTH - 1 : 0]  intermediate_total;
+reg         [FLOAT_DATA_WIDTH - 1 : 0]  intermediate_addition;
+reg         [STATE_WIDTH - 1 : 0]       state_context_one;
+reg         [STATE_WIDTH - 1 : 0]       state_context_two;
 reg                                     start_second_add;
 reg                                     start_first_add;
 reg                                     start_add;
+reg                                     start_add_dos;
+reg                                     first_done;
+
 wire                                    add_done;
+wire                                    add_done_dos;
 wire       [FLOAT_DATA_WIDTH - 1 : 0]   first_add_out;
 wire       [FLOAT_DATA_WIDTH - 1 : 0]   second_add_out;
 
@@ -40,13 +45,22 @@ delay stopper_convert (
 		.done ( add_done )
 );
 
+
+delay dos (
+		.max  ( ADD_LATENCY ),
+		.clk  ( clk ),
+		.rst  ( start_add_dos ),
+		.done ( add_done_dos )
+);
+
+
 add adder_one (
 
     .aclr   (rst),
     .clk_en (start_first_add),
     .clock  (clk),
-    .dataa  (val_1),
-    .datab  (current_val_1),
+    .dataa  (current_total),
+    .datab  (to_add_one),
     .result (first_add_out)
 
 );
@@ -56,8 +70,8 @@ add adder_two (
     .aclr   (rst),
     .clk_en (start_first_add),
     .clock  (clk),
-    .dataa  (val_2),
-    .datab  (current_val_2),
+    .dataa  (intermediate_total),
+    .datab  (intermediate_addition),
     .result (second_add_out)
 
 );
@@ -66,24 +80,28 @@ add adder_two (
 
 initial begin
 
-    state <= IDLE;
+    state_context_one <= IDLE;
     start_add <= 1'b0;
     start_first_add <= 1'b0;
     start_second_add <= 1'b0;
     done <= 1'b0;
+    intermediate_total <= 32'b0;
+    intermediate_addition <= 32'b0;
+    first_done <= 1'b0;
+    start_add_dos <= 1'b0;
 
 end
 
 
 always @(posedge clk) begin
 
-    case(state)
+    case(state_context_one)
 
         IDLE: begin
-            done <= 1'b0;
+            first_done <= 1'b0;
             if (clk_en && start) begin
 
-                state <= ADD_ONE;
+                state_context_one <= ADD_ONE;
                 start_add <= 1'b1;
                 start_first_add <= 1'b1;
                 working <= 1'b1;
@@ -92,8 +110,7 @@ always @(posedge clk) begin
                 working <= 1'b0;
                 start_first_add <= 1'b0;
                 start_second_add <= 1'b0;
-                new_val_2 <= 32'b0;
-                new_val_1 <= 32'b0;
+
             end
 
         end
@@ -105,10 +122,12 @@ always @(posedge clk) begin
                 start_first_add <= 1'b0;
                 start_add <= 1'b0;
                 start_second_add <= 1'b0;
-                state <= DONE;
-                
-                new_val_1 <= first_add_out;
-                new_val_2 <= second_add_out;
+                state_context_one <= IDLE;
+                first_done <= 1'b1;
+
+                intermediate_total <= first_add_out;
+                intermediate_addition <= to_add_two;
+                start_add_dos <= 1'b1;
 
 
             end else begin
@@ -116,29 +135,43 @@ always @(posedge clk) begin
             end
 
         end
-        //CURRENTLY UNUSED
-        ADD_TWO: begin
-            start_add <= 1'b0;
-            if (add_done) begin
 
-                state <= DONE;
-                done <= 1'b1;
-                start_second_add <= 1'b0;
-                start_add <= 1'b0;
-                new_val_1 <= first_add_out;
-                new_val_2 <= second_add_out;
-
-                end
-            end
-
-        DONE: begin
-            done <= 1'b1;
-            state <= IDLE;
-        end
-
-    default: state <= IDLE;
+    default: state_context_one <= IDLE;
 
     endcase
+
+    case(state_context_two)
+
+        IDLE: begin
+            done <= 1'b0
+            working <= first_done;
+            if (first_done) begin
+                state_context_two <= ADD_ONE
+
+            end else begin
+
+            end
+
+        end
+
+        ADD_ONE: begin
+            done <= 1'b0;
+            working <= 1'b0
+            if (add_done_dos) begin
+                done <= 1'b1;
+                working <= 1'b0;
+                new total <= second_add_out;
+                state_context_two <= IDLE;
+                
+
+            end
+
+        end
+
+        default: state_context_two <= IDLE;
+
+    endcase
+
 
 end
 
