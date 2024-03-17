@@ -10,17 +10,20 @@ parameter CLEAR = 2'd0;
 parameter GO = 2'd1;
 parameter READ = 2'd2;
 
-parameter IDLE = 3'b000;
-parameter WORKING = 3'b001;
-parameter FLUSHING = 3'b010;
+parameter IDLE =       3'b000;
+parameter WORKING =    3'b001;
+parameter FLUSHING =   3'b010;
 parameter DISPLAYING = 3'b011;
-parameter DONE = 3'b111;
+parameter WAITING    = 3'b100;
+parameter DONE =       3'b111;
 
 parameter WAITING = 3'b000;
 parameter INPUTING = 3'b001;
 
 parameter WAITING_FOR_HALF_VALUES = 3'b000;
 parameter HALF_VALUES_ADDED = 3'b001;
+
+parameter ADD_LATENCY = 10'b0000000101;
 
 
 input                                 clk;
@@ -48,6 +51,8 @@ reg [CORDIC_DATA_WIDTH - 1 : 0] temp_value_container;
 reg [FLT_DATA_WIDTH - 1 : 0] temp_square_value_container;
 reg [STATE_WIDTH - 1 : 0]    state_context_two;
 reg                          ready_to_output;
+reg                          generate_output;
+reg                          start_output_timer;
 //reg [STATE_WIDTH - 1 : 0]    state_short;
 
 //module stage_1 (clk, clk_en, rst, start, x_one, x_two, x_three, done, out_one, out_two, out_three, half_out_one, half_out_two, half_out_three, square_out_one, square_out_two, square_out_three);
@@ -75,6 +80,7 @@ wire start_final_add;
 wire [FLT_DATA_WIDTH - 1 : 0] shorted_new_sum;
 wire                          half_short_complete;
 wire [FLT_DATA_WIDTH - 1 : 0] full_pipeline_new_sum;
+
 wire                          full_pipeine_complete;
 
 wire                          pipeline_stage_1_in_use;
@@ -82,6 +88,8 @@ wire                          cordic_pipeline_cleared;
 wire                          pipeline_stage_3_in_use;
 wire                          pipeline_stage_4_in_use;
 wire                          shorting_stage_4_in_use;
+wire [FLT_DATA_WIDTH - 1 : 0] vector_sum;
+wire                          output_generated;
 
 stage_1 first_stage (
 
@@ -171,6 +179,28 @@ stage_4 short_x_div_2 (
 );
 
 
+// Displaying Hardware
+delay add_waiter (
+		.max  ( ADD_LATENCY ),
+		.clk  ( clk ),
+		.rst  ( start_output_timer ),
+		.done ( output_generated )
+);
+
+
+add output_adder (
+
+    .aclr   (rst),
+    .clk_en (generate_output),
+    .clock  (clk),
+    .dataa  (cos_sum),
+    .datab  (half_sum),
+    .result (vector_sum)
+
+);
+
+
+
 initial begin
     half_sum <= 32'b0;
     cos_sum <= 32'b0;
@@ -180,8 +210,9 @@ initial begin
     temp_value_container <= 22'b0;
     temp_square_value_container <= 32'b0;
     start_stage_3 <= 1'b0;
-    //state_short <= WAITING_FOR_HALF_VALUES;
     ready_to_output <= 1'b0;
+    generate_output < = 1'b0;
+    start_output_timer <= 1'b0;
 
 end
 
@@ -204,6 +235,8 @@ always@(posedge clk) begin
 
             end else if ( n == READ ) begin
                 
+                state <= WAITING;
+
             end else if ( n == CLEAR ) begin
             
             end
@@ -226,11 +259,29 @@ always@(posedge clk) begin
     end
 
     FLUSHING: begin
-        state <= IDLE;
+        state <= DONE;
+
+    end
+
+    WAITING: begin
+        
+        if (ready_to_output) begin 
+            state <= DISPLAYING;
+            generate_output <= 1'b1;
+            start_output_timer <= 1'b1;
+        end
     end
 
     DISPLAYING: begin
-        state <= IDLE;
+        start_output_timer <= 1'b0;
+        if (output_generated) begin
+        
+            state <= DONE;
+            result <= vector_sum;
+            generate_output <= 1'b0;
+
+        end
+
     end
 
     DONE: begin
