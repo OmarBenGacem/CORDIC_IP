@@ -97,7 +97,14 @@ end
 
 always @(posedge clk) begin
 
-    working <= context_one_working || context_two_working;
+    //working <= context_one_working || context_two_working;
+
+    if ((state_context_one == IDLE) && (state_context_two == IDLE)) begin
+        working <= 1'b0;
+    end else begin
+        working <= 1'b1;
+    end
+    
 
     context_one_working <= (state_context_one == IDLE) ? 1'b0 : 1'b1;
     context_two_working <= (state_context_two == IDLE) ? 1'b0 : 1'b1;
@@ -111,10 +118,10 @@ always @(posedge clk) begin
                 state_context_one <= ADD_ONE;
                 start_add <= 1'b1;
                 start_first_add <= 1'b1;
-                working <= 1'b1;
+
 
             end else begin
-                working <= 1'b0;
+
                 start_first_add <= 1'b0;
 
             end
@@ -148,8 +155,7 @@ always @(posedge clk) begin
 
         IDLE: begin
             done <= 1'b0;
-            
-            working <= first_done;
+
             if (first_done) begin
                 state_context_two <= ADD_ONE;
                 start_second_add <= 1'b1;
@@ -164,10 +170,10 @@ always @(posedge clk) begin
         ADD_ONE: begin
             start_add_dos <= 1'b0;
             done <= 1'b0;
-            working <= 1'b1;
+
             if (add_done_dos) begin
                 done <= 1'b1;
-                working <= 1'b0;
+
                 new_total <= second_add_out;
                 working_total <= second_add_out;
                 state_context_two <= IDLE;

@@ -83,10 +83,6 @@ wire                          pipeline_stage_3_in_use;
 wire                          pipeline_stage_4_in_use;
 wire                          shorting_stage_4_in_use;
 
-wire pipeline_empty;
-
-assign pipeline_empty = !( pipeline_stage_1_in_use || cordic_pipeline_cleared || pipeline_stage_3_in_use || pipeline_stage_4_in_use || shorting_stage_4_in_use );
-
 stage_1 first_stage (
 
     .clk                (clk),
