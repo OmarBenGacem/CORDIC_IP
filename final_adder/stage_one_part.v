@@ -6,7 +6,7 @@ parameter CRD_DATA_WIDTH = 24; //cordic data width
 parameter SIGNED_128_24_BITS = 24'b001000000000000000000000;
 parameter ONE_TWO_EIGHT = 32'b00111100000000000000000000000000;
 parameter HALF = 32'b00111111000000000000000000000000;
-parameter CONVERSION_LATANCY = 10'b0000000011;
+parameter CONVERSION_LATANCY = 10'b0000000100;
 parameter COUNTER_WIDTH = 10;
 parameter STATE_WIDTH = 2;
 
@@ -33,7 +33,7 @@ output reg done;
 wire  [FLT_DATA_WIDTH - 1 : 0] squared;
 wire  [FLT_DATA_WIDTH - 1 : 0] halved;
 wire signed [CRD_DATA_WIDTH - 1 : 0] cordic_value; //one wider
-wire signed [CRD_DATA_WIDTH - 1 : 0] cordic_value_shifted; //one wider
+wire signed [(CRD_DATA_WIDTH + 7) - 1 : 0] cordic_value_shifted; //one wider
 wire signed [CRD_DATA_WIDTH - 1 : 0] conv_to_add;
 wire counter_done;
 
@@ -69,7 +69,7 @@ fp_mul square_unit (
 );
 
 
-//one bit wider than the cordic one, so that the subtraction can be done single cycle, then just remove MSB
+//many bits wider than the cordic one, so that the subtraction can be done single cycle, then just remove MSB
 fp_to_10_14_fixed converter (
 
     .clock      ( clk ),
@@ -112,7 +112,7 @@ initial begin
 
 end
 
-assign cordic_value_shifted = cordic_value >>> 7;
+assign cordic_value_shifted = {cordic_value >>> 7, 7'b0};
 always @(posedge clk) begin
 
     if (rst) begin
@@ -146,7 +146,7 @@ always @(posedge clk) begin
                 state <= DONE;
                 half <= halved;
                 square <= squared;
-                x_to_cordic <= cordic_value_shifted[21:0];
+                x_to_cordic <= cordic_value_shifted[22   : 1];
                 done <= 1'b1;
             end
 

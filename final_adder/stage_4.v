@@ -90,6 +90,10 @@ always @(posedge clk) begin
 
             end else begin
                 working <= 1'b0;
+                start_first_add <= 1'b0;
+                start_second_add <= 1'b0;
+                new_val_2 <= 32'b0;
+                new_val_1 <= 32'b0;
             end
 
         end

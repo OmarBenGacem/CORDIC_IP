@@ -103,17 +103,13 @@ always @(posedge clk) begin
 
         end
 
-        WORKING: begin
-
-        end    
-
-
         DONE: begin
             done <= 1'b1;
             state <= IDLE;
 
 
         end
+        default: state <= IDLE;
 
     endcase
 
