@@ -129,7 +129,8 @@ end
 always @(posedge clk) begin
 
     working <= context_one_working || context_two_working;
-
+    context_one_working <= (state_context_one == IDLE) ? 1'b0 : 1'b1;
+    context_two_working <= (state_context_two == IDLE) ? 1'b0 : 1'b1;
     if (rst) begin
     
     
@@ -144,12 +145,11 @@ always @(posedge clk) begin
                     state_context_one <= CONVERT;
                     start_convert <= 1'b1;
                     go_convert <= 1'b1;
-                    working <= 1'b1;
-                    context_one_working <= 1'b1;
+
 
                 end else begin
 
-                    context_one_working <= 1'b0;
+
 
                 end
 
@@ -183,10 +183,10 @@ always @(posedge clk) begin
             if (go_mult) begin
                 state_context_two <= MULTIPLY;
                 start_multiply <= 1'b1;
-                context_two_working <= 1'b1;
+
 
             end else begin
-                context_two_working <= 1'b0;
+
             end
         end
         

@@ -1,4 +1,4 @@
-module stage_one_part (clk, clk_en, rst, start, x, half, square, x_to_cordic, done);
+module stage_one_part (clk, clk_en, rst, start, x, half, square, x_to_cordic, done, working);
 
 parameter FLT_DATA_WIDTH = 32;
 parameter ACTUAL_CORDIC_WIDTH = 22;
@@ -28,6 +28,7 @@ output reg [FLT_DATA_WIDTH - 1 : 0] half;
 output reg [FLT_DATA_WIDTH - 1 : 0] square;
 output reg signed [ACTUAL_CORDIC_WIDTH - 1 : 0] x_to_cordic;
 output reg done;
+output reg working;
 
 
 wire  [FLT_DATA_WIDTH - 1 : 0] squared;
@@ -100,7 +101,7 @@ delay stopper (
 
 
 initial begin
-
+    working <= 1'b0;
     state <= IDLE;
     start_functions <= 1'b0;
     start_convert <= 1'b0;
@@ -122,7 +123,7 @@ always @(posedge clk) begin
     counter_max <= CONVERSION_LATANCY; 
 
     end else begin
-
+        working <= (state == IDLE) ? 1'b0 : 1'b1;
         case(state)
 
         IDLE: begin
