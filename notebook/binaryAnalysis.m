@@ -34,12 +34,23 @@ fpr = fipref;
 fpr.NumberDisplay = 'bin';
 %d = fi(a_cordic_angles_radians_float,1,22,21);
 %disp(d);
+x  = 5;
+disp("24 bits");
+disp(fi([x, (x-128), ((x-128) / 128), 128], 1, 24, 14));
+disp("22 bits");
+disp(fi([x, (x-128), ((x-128) / 128), 128], 1, 22, 20));
+disp(newline);
+disp(newline);
+disp("again");
+x  = 180z;
+disp("24 bits");
+disp(fi([x, (x-128), ((x-128) / 128), 128], 1, 24, 14));
+disp("22 bits");
+disp(fi([x, (x-128), ((x-128) / 128), 128], 1, 22, 20));
 
-disp(fi([5, (5-128), ((5-128) / 128), 128], 1, 24, 14));
+%disp("other shit");
 
-
-
-disp(fi([10, (10-128), ((10-128) / 128), 128], 1, 24, 14));
+%disp(fi([5, 20, 180, -60], 1, 24, 14));
 
 %disp(fi((5 - 128)/128, 1, 22, 20));
 
