@@ -40,14 +40,12 @@ reg start_stage_3;
 
 //stage 1 done is the done signal
 wire stage_1_done;
-wire stage_2_done;
-wire stage_3_done;
 
 reg [STATE_WIDTH - 1 : 0]    state;
-reg [FLT_DATA_WIDTH - 1 : 0] sum_one;
-reg [FLT_DATA_WIDTH - 1 : 0] sum_two;
+reg [FLT_DATA_WIDTH - 1 : 0] half_sum;
+reg [FLT_DATA_WIDTH - 1 : 0] cos_sum;
 reg [FLT_DATA_WIDTH - 1 : 0] first_x_halved;
-reg [FLT_DATA_WIDTH - 1 : 0] temp_value_container;
+reg [CORDIC_DATA_WIDTH - 1 : 0] temp_value_container;
 reg [FLT_DATA_WIDTH - 1 : 0] temp_square_value_container;
 reg [STATE_WIDTH - 1 : 0]    state_context_two;
 //reg [STATE_WIDTH - 1 : 0]    state_short;
@@ -154,8 +152,8 @@ stage_4 fourth_stage (
     .rst            (rst),
     .clk_en         (clk_en),
     .start          (start_final_add),
-    .val_1          (sum_one),
-    .val_2          (sum_two),
+    .val_1          (half_sum),
+    .val_2          (cos_sum),
     .current_val_1  (final_add_one),
     .current_val_2  (final_add_two),
     .new_val_1      (full_pipeline_new_sum_1),
@@ -171,8 +169,8 @@ stage_4 short_x_div_2 (
     .rst            (rst),
     .clk_en         (clk_en),
     .start          (stage_1_done),
-    .val_1          (sum_one),
-    .val_2          (sum_two),
+    .val_1          (half_sum),
+    .val_2          (cos_sum),
     .current_val_1  (x_one_halved),
     .current_val_2  (x_two_halved),
     .new_val_1      (shorted_new_sum_1),
@@ -184,12 +182,12 @@ stage_4 short_x_div_2 (
 
 
 initial begin
-    sum_one <= 32'b0;
-    sum_two <= 32'b0;
+    half_sum <= 32'b0;
+    cos_sum <= 32'b0;
     state <= IDLE;
     state_context_two <= WAITING;
     first_x_halved <= 32'b0;
-    temp_value_container <= 32'b0;
+    temp_value_container <= 22'b0;
     temp_square_value_container <= 32'b0;
     start_stage_3 <= 1'b0;
     //state_short <= WAITING_FOR_HALF_VALUES;
@@ -277,15 +275,15 @@ always@(posedge clk) begin
 
     if (half_short_complete) begin
 
-        sum_one <= shorted_new_sum_1;
-        sum_two <= shorted_new_sum_2;
+        half_sum <= shorted_new_sum_1;
+        cos_sum <= shorted_new_sum_2;
 
     end
 
     if (full_pipeine_complete) begin
 
-        sum_one <= full_pipeline_new_sum_1;
-        sum_two <= full_pipeline_new_sum_2;
+        half_sum <= full_pipeline_new_sum_1;
+        cos_sum <= full_pipeline_new_sum_2;
 
     end
 /*

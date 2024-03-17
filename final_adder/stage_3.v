@@ -7,7 +7,7 @@ parameter CORDIC_DATA_WIDTH = INTEGER_WIDTH + FRACTIONAL_WIDTH;
 parameter STATE_WIDTH = 2;
 
 
-parameter CONVERSION_LATANCY = 10'b0000000011;
+parameter CONVERSION_LATANCY = 10'b0000000100;
 parameter MULTIPLY_LATENCY = 10'b0000000100;
 
 
@@ -164,7 +164,7 @@ always @(posedge clk) begin
                     intermediate_one <= cordic_one_float;
                     intermediate_two <= cordic_two_float;
                     intermediate_one_squared <= one_squared;
-                    intermediate_one_squared <= two_squared;
+                    intermediate_two_squared <= two_squared;
 
                 end
 
