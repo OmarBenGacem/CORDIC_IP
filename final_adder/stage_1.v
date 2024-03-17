@@ -37,6 +37,8 @@ wire                          x_two_done;
 wire [FLT_DATA_WIDTH - 1 : 0] x_two_halfed;
 wire [FLT_DATA_WIDTH - 1 : 0] x_two_squared;
 wire [CORDIC_DATA_WIDTH - 1 : 0] x_two_to_cordic;
+wire one_working;
+wire two_working;
 reg  [1 : 0]                  state;
 
 
@@ -51,7 +53,8 @@ stage_one_part first (
     .half        (x_one_halfed),
     .square      (x_one_squared),
     .x_to_cordic (x_one_to_cordic),
-    .done        (x_one_done)
+    .done        (x_one_done),
+    .working     (one_working)
 
 );
 
@@ -65,7 +68,8 @@ stage_one_part second (
     .half        (x_two_halfed),
     .square      (x_two_squared),
     .x_to_cordic (x_two_to_cordic),
-    .done        (x_two_done)
+    .done        (x_two_done),
+    .working     (two_working)
 
 );
 
@@ -82,6 +86,9 @@ end
 
 always @(posedge clk) begin
 
+
+    working <= one_working || two_working;
+
     case(state)
 
         IDLE: begin
@@ -95,10 +102,10 @@ always @(posedge clk) begin
                 half_out_two <= x_two_halfed;
                 square_out_one <= x_one_squared;
                 square_out_two <= x_two_squared;
-                working <= 1'b1;
+
 
             end else begin
-                working <= 1'b0;
+
             end
 
         end

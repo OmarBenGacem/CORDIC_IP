@@ -21,7 +21,7 @@ output reg  [FLOAT_DATA_WIDTH - 1 : 0]  new_total;
 output reg                              done;
 output reg                              working;
 
-reg         [FLOAT_DATA_WIDTH - 1 : 0]  intermediate_total;
+reg         [FLOAT_DATA_WIDTH - 1 : 0]  working_total;
 reg         [FLOAT_DATA_WIDTH - 1 : 0]  intermediate_addition;
 reg         [STATE_WIDTH - 1 : 0]       state_context_one;
 reg         [STATE_WIDTH - 1 : 0]       state_context_two;
@@ -30,6 +30,8 @@ reg                                     start_first_add;
 reg                                     start_add;
 reg                                     start_add_dos;
 reg                                     first_done;
+reg context_one_working;
+reg context_two_working;
 
 wire                                    add_done;
 wire                                    add_done_dos;
@@ -59,7 +61,7 @@ add adder_one (
     .aclr   (rst),
     .clk_en (start_first_add),
     .clock  (clk),
-    .dataa  (current_total),
+    .dataa  (to_add_two),
     .datab  (to_add_one),
     .result (first_add_out)
 
@@ -68,9 +70,9 @@ add adder_one (
 add adder_two (
 
     .aclr   (rst),
-    .clk_en (start_first_add),
+    .clk_en (start_second_add),
     .clock  (clk),
-    .dataa  (intermediate_total),
+    .dataa  (working_total),
     .datab  (intermediate_addition),
     .result (second_add_out)
 
@@ -85,7 +87,7 @@ initial begin
     start_first_add <= 1'b0;
     start_second_add <= 1'b0;
     done <= 1'b0;
-    intermediate_total <= 32'b0;
+    working_total <= 32'b0;
     intermediate_addition <= 32'b0;
     first_done <= 1'b0;
     start_add_dos <= 1'b0;
@@ -94,6 +96,11 @@ end
 
 
 always @(posedge clk) begin
+
+    working <= context_one_working || context_two_working;
+
+    context_one_working <= (state_context_one == IDLE) ? 1'b0 : 1'b1;
+    context_two_working <= (state_context_two == IDLE) ? 1'b0 : 1'b1;
 
     case(state_context_one)
 
@@ -109,7 +116,6 @@ always @(posedge clk) begin
             end else begin
                 working <= 1'b0;
                 start_first_add <= 1'b0;
-                start_second_add <= 1'b0;
 
             end
 
@@ -121,13 +127,11 @@ always @(posedge clk) begin
             if (add_done) begin
                 start_first_add <= 1'b0;
                 start_add <= 1'b0;
-                start_second_add <= 1'b0;
                 state_context_one <= IDLE;
                 first_done <= 1'b1;
 
-                intermediate_total <= first_add_out;
-                intermediate_addition <= to_add_two;
-                start_add_dos <= 1'b1;
+            
+                intermediate_addition <= first_add_out;
 
 
             end else begin
@@ -143,24 +147,29 @@ always @(posedge clk) begin
     case(state_context_two)
 
         IDLE: begin
-            done <= 1'b0
+            done <= 1'b0;
+            
             working <= first_done;
             if (first_done) begin
-                state_context_two <= ADD_ONE
+                state_context_two <= ADD_ONE;
+                start_second_add <= 1'b1;
+                start_add_dos <= 1'b1;
 
             end else begin
-
+                start_second_add <= 1'b0;
             end
 
         end
 
         ADD_ONE: begin
+            start_add_dos <= 1'b0;
             done <= 1'b0;
-            working <= 1'b0
+            working <= 1'b1;
             if (add_done_dos) begin
                 done <= 1'b1;
                 working <= 1'b0;
-                new total <= second_add_out;
+                new_total <= second_add_out;
+                working_total <= second_add_out;
                 state_context_two <= IDLE;
                 
 

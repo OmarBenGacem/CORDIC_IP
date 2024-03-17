@@ -34,7 +34,6 @@ output reg  [FLT_DATA_WIDTH - 1 : 0]  result;
 output reg                            done;
 
 reg start_stage_1;
-reg start_stage_2;
 reg start_stage_3;
 
 
@@ -48,6 +47,7 @@ reg [FLT_DATA_WIDTH - 1 : 0] first_x_halved;
 reg [CORDIC_DATA_WIDTH - 1 : 0] temp_value_container;
 reg [FLT_DATA_WIDTH - 1 : 0] temp_square_value_container;
 reg [STATE_WIDTH - 1 : 0]    state_context_two;
+reg                          ready_to_output;
 //reg [STATE_WIDTH - 1 : 0]    state_short;
 
 //module stage_1 (clk, clk_en, rst, start, x_one, x_two, x_three, done, out_one, out_two, out_three, half_out_one, half_out_two, half_out_three, square_out_one, square_out_two, square_out_three);
@@ -150,7 +150,7 @@ stage_4 fourth_stage (
     .rst            (rst),
     .clk_en         (clk_en),
     .start          (start_final_add),
-    .curent_total   (cos_sum),
+    .current_total  (cos_sum),
     .to_add_one     (final_add_one),
     .to_add_two     (final_add_two),
     .new_total      (full_pipeline_new_sum),
@@ -165,9 +165,9 @@ stage_4 short_x_div_2 (
     .rst            (rst),
     .clk_en         (clk_en),
     .start          (stage_1_done),
-    .curent_total   (half_sum),
+    .current_total  (half_sum),
     .to_add_one     (x_one_halved),
-    .to_add_two     (x_one_halved),
+    .to_add_two     (x_two_halved),
     .new_total      (shorted_new_sum),
     .done           (half_short_complete),
     .working        (shorting_stage_4_in_use)
@@ -185,10 +185,14 @@ initial begin
     temp_square_value_container <= 32'b0;
     start_stage_3 <= 1'b0;
     //state_short <= WAITING_FOR_HALF_VALUES;
+    ready_to_output <= 1'b0;
 
 end
 
 always@(posedge clk) begin
+
+
+    ready_to_output <= !pipeline_stage_4_in_use && !shorting_stage_4_in_use && !pipeline_stage_3_in_use && cordic_pipeline_cleared && !pipeline_stage_1_in_use;
 
     case(state)
 
@@ -277,21 +281,7 @@ always@(posedge clk) begin
         cos_sum <= full_pipeline_new_sum;
 
     end
-/*
-    case (state_short)
 
-        WAITING_FOR_HALF_VALUES: begin
-
-        end
-
-        HALF_VALUES_ADDED: begin
-
-        end
-
-        default: state_short <= WAITING_FOR_HALF_VALUES
-
-    endcase
-*/
 end
 
 endmodule
