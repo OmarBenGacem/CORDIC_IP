@@ -30,8 +30,6 @@ reg                                     start_first_add;
 reg                                     start_add;
 reg                                     start_add_dos;
 reg                                     first_done;
-reg context_one_working;
-reg context_two_working;
 
 wire                                    add_done;
 wire                                    add_done_dos;
@@ -97,7 +95,7 @@ end
 
 always @(posedge clk) begin
 
-    //working <= context_one_working || context_two_working;
+
 
     if ((state_context_one == IDLE) && (state_context_two == IDLE)) begin
         working <= 1'b0;
@@ -106,8 +104,7 @@ always @(posedge clk) begin
     end
     
 
-    context_one_working <= (state_context_one == IDLE) ? 1'b0 : 1'b1;
-    context_two_working <= (state_context_two == IDLE) ? 1'b0 : 1'b1;
+
 
     case(state_context_one)
 
@@ -134,7 +131,7 @@ always @(posedge clk) begin
             if (add_done) begin
                 start_first_add <= 1'b0;
                 start_add <= 1'b0;
-                state_context_one <= IDLE;
+                state_context_one <= DONE;
                 first_done <= 1'b1;
 
             
@@ -145,6 +142,10 @@ always @(posedge clk) begin
                 start_add <= 1'b0;
             end
 
+        end
+
+        DONE: begin
+            state_context_one <= IDLE;
         end
 
     default: state_context_one <= IDLE;
