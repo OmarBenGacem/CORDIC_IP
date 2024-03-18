@@ -246,7 +246,7 @@ always@(posedge clk) begin
         ready_to_output <= 1'b0;
         generate_output <= 1'b0;
         start_output_timer <= 1'b0;
-        rst_internal <= 1'b1;
+        rst_internal <= 1'b0;
         clk_en_internal <= 1'b0;
 
     end else begin
@@ -255,6 +255,7 @@ always@(posedge clk) begin
         case(state)
 
         IDLE: begin  //000
+            clk_en_internal <= 1'b1;
             done <= 1'b0;
             result <= 32'b0;
             rst_internal <= 1'b0;
@@ -329,7 +330,7 @@ always@(posedge clk) begin
                 start_stage_3 <= 1'b0;
                 ready_to_output <= 1'b0;
                 start_output_timer <= 1'b0;
-                rst_internal <= 1'b1;
+                //rst_internal <= 1'b1;
                 clk_en_internal <= 1'b0;
 
             end
