@@ -55,9 +55,7 @@ reg                          ready_to_output;
 reg                          generate_output;
 reg                          start_output_timer;
 reg                          clk_en_internal;
-//reg [STATE_WIDTH - 1 : 0]    state_short;
 
-//module stage_1 (clk, clk_en, rst, start, x_one, x_two, x_three, done, out_one, out_two, out_three, half_out_one, half_out_two, half_out_three, square_out_one, square_out_two, square_out_three);
 
 
 wire [FLT_DATA_WIDTH - 1 : 0] x_one_squared;
