@@ -81,6 +81,7 @@ add adder_two (
 initial begin
 
     state_context_one <= IDLE;
+    state_context_two <= IDLE;
     start_add <= 1'b0;
     start_first_add <= 1'b0;
     start_second_add <= 1'b0;
@@ -89,105 +90,122 @@ initial begin
     intermediate_addition <= 32'b0;
     first_done <= 1'b0;
     start_add_dos <= 1'b0;
+    working <= 1'b0;
+    new_total <= 32'b0;
 
 end
 
 
 always @(posedge clk) begin
 
+    if (rst) begin
 
-
-    if ((state_context_one == IDLE) && (state_context_two == IDLE)) begin
+        state_context_one <= IDLE;
+        state_context_two <= IDLE;
+        start_add <= 1'b0;
+        start_first_add <= 1'b0;
+        start_second_add <= 1'b0;
+        done <= 1'b0;
+        working_total <= 32'b0;
+        intermediate_addition <= 32'b0;
+        first_done <= 1'b0;
+        start_add_dos <= 1'b0;
         working <= 1'b0;
+        new_total <= 32'b0;
+
     end else begin
-        working <= 1'b1;
-    end
-    
+
+        if ((state_context_one == IDLE) && (state_context_two == IDLE)) begin
+            working <= 1'b0;
+        end else begin
+            working <= 1'b1;
+        end
+        
 
 
 
-    case(state_context_one)
+        case(state_context_one)
 
-        IDLE: begin
-            first_done <= 1'b0;
-            if (clk_en && start) begin
+            IDLE: begin
+                first_done <= 1'b0;
+                if (clk_en && start) begin
 
-                state_context_one <= ADD_ONE;
-                start_add <= 1'b1;
-                start_first_add <= 1'b1;
+                    state_context_one <= ADD_ONE;
+                    start_add <= 1'b1;
+                    start_first_add <= 1'b1;
 
 
-            end else begin
+                end else begin
 
-                start_first_add <= 1'b0;
+                    start_first_add <= 1'b0;
+
+                end
 
             end
 
-        end
+            ADD_ONE: begin
 
-        ADD_ONE: begin
-
-            
-            if (add_done) begin
-                start_first_add <= 1'b0;
-                start_add <= 1'b0;
-                state_context_one <= DONE;
-                first_done <= 1'b1;
-
-            
-                intermediate_addition <= first_add_out;
-
-
-            end else begin
-                start_add <= 1'b0;
-            end
-
-        end
-
-        DONE: begin
-            state_context_one <= IDLE;
-        end
-
-    default: state_context_one <= IDLE;
-
-    endcase
-
-    case(state_context_two)
-
-        IDLE: begin
-            done <= 1'b0;
-
-            if (first_done) begin
-                state_context_two <= ADD_ONE;
-                start_second_add <= 1'b1;
-                start_add_dos <= 1'b1;
-
-            end else begin
-                start_second_add <= 1'b0;
-            end
-
-        end
-
-        ADD_ONE: begin
-            start_add_dos <= 1'b0;
-            done <= 1'b0;
-
-            if (add_done_dos) begin
-                done <= 1'b1;
-
-                new_total <= second_add_out;
-                working_total <= second_add_out;
-                state_context_two <= IDLE;
                 
+                if (add_done) begin
+                    start_first_add <= 1'b0;
+                    start_add <= 1'b0;
+                    state_context_one <= DONE;
+                    first_done <= 1'b1;
+
+                
+                    intermediate_addition <= first_add_out;
+
+
+                end else begin
+                    start_add <= 1'b0;
+                end
 
             end
 
-        end
+            DONE: begin
+                state_context_one <= IDLE;
+            end
 
-        default: state_context_two <= IDLE;
+        default: state_context_one <= IDLE;
 
-    endcase
+        endcase
 
+        case(state_context_two)
+
+            IDLE: begin
+                done <= 1'b0;
+
+                if (first_done) begin
+                    state_context_two <= ADD_ONE;
+                    start_second_add <= 1'b1;
+                    start_add_dos <= 1'b1;
+
+                end else begin
+                    start_second_add <= 1'b0;
+                end
+
+            end
+
+            ADD_ONE: begin
+                start_add_dos <= 1'b0;
+                done <= 1'b0;
+
+                if (add_done_dos) begin
+                    done <= 1'b1;
+
+                    new_total <= second_add_out;
+                    working_total <= second_add_out;
+                    state_context_two <= IDLE;
+                    
+
+                end
+
+            end
+
+            default: state_context_two <= IDLE;
+
+        endcase
+    end
 
 end
 

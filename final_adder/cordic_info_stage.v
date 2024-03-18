@@ -1,4 +1,4 @@
-module cordic_info_stage(clk, clk_en, target, valid_in, squared_in,  shift_value, shift_angle, angle, x, y, new_angle, new_x, new_y, target_out, valid_out, squared_out);
+module cordic_info_stage(clk, clk_en, target, valid_in, squared_in, shift_value, shift_angle, angle, x, y, new_angle, new_x, new_y, target_out, valid_out, squared_out);
 
 parameter INTEGER_WIDTH = 2;
 parameter DECIMAL_WIDTH = 20;
@@ -69,6 +69,8 @@ initial begin
     new_x <= 22'b0;
     new_y <= 22'b0;
 	target_out <= 22'b0;
+	valid_out <= 1'b0;
+	squared_out <= 1'b0;
 
 end
 
@@ -76,6 +78,7 @@ assign shifted_y = y >>> shift_value;
 assign shifted_x = x >>> shift_value;
 
 always @(posedge clk) begin
+	
     if (clk_en) begin
         new_angle <= computed_angle;
         new_x <= computed_x;

@@ -113,8 +113,10 @@ fp_mul x_two_mul (
 );
 
 initial begin
-
+    working <= 1'b0;
     go_convert <= 1'b0;
+    start_convert <= 1'b0;
+    go_mult <= 1'b0;
     start_multiply <= 1'b0;
     state_context_one <= IDLE;
     state_context_two <= IDLE;
@@ -123,6 +125,10 @@ initial begin
     to_add_two <= 32'b0;
     context_one_working <= 1'b0;
     context_two_working <= 1'b0;
+    intermediate_one <= 32'b0;
+    intermediate_two <= 32'b0;
+    intermediate_one_squared <= 32'b0;
+    intermediate_two_squared <= 32'b0;
 
 end
 
@@ -131,9 +137,26 @@ always @(posedge clk) begin
     working <= context_one_working || context_two_working;
     context_one_working <= (state_context_one == IDLE) ? 1'b0 : 1'b1;
     context_two_working <= (state_context_two == IDLE) ? 1'b0 : 1'b1;
+    
     if (rst) begin
     
-    
+        working <= 1'b0;
+        go_convert <= 1'b0;
+        start_convert <= 1'b0;
+        go_mult <= 1'b0;
+        start_multiply <= 1'b0;
+        state_context_one <= IDLE;
+        state_context_two <= IDLE;
+        done <= 1'b0;
+        to_add_one <= 32'b0;
+        to_add_two <= 32'b0;
+        context_one_working <= 1'b0;
+        context_two_working <= 1'b0;
+        intermediate_one <= 32'b0;
+        intermediate_two <= 32'b0;
+        intermediate_one_squared <= 32'b0;
+        intermediate_two_squared <= 32'b0;
+
     end else begin
 
         case(state_context_one)
