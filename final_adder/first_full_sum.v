@@ -14,7 +14,7 @@ parameter IDLE =       3'b000;
 parameter WORKING =    3'b001;
 parameter FLUSHING =   3'b010;
 parameter DISPLAYING = 3'b011;
-parameter WAITING    = 3'b100;
+parameter GENERATING_OUTPUT    = 3'b100;
 parameter DONE =       3'b111;
 
 parameter WAITING = 3'b000;
@@ -43,6 +43,7 @@ reg start_stage_3;
 //stage 1 done is the done signal
 wire stage_1_done;
 
+reg                          rst_internal;
 reg [STATE_WIDTH - 1 : 0]    state;
 reg [FLT_DATA_WIDTH - 1 : 0] half_sum;
 reg [FLT_DATA_WIDTH - 1 : 0] cos_sum;
@@ -53,6 +54,7 @@ reg [STATE_WIDTH - 1 : 0]    state_context_two;
 reg                          ready_to_output;
 reg                          generate_output;
 reg                          start_output_timer;
+reg                          clk_en_internal;
 //reg [STATE_WIDTH - 1 : 0]    state_short;
 
 //module stage_1 (clk, clk_en, rst, start, x_one, x_two, x_three, done, out_one, out_two, out_three, half_out_one, half_out_two, half_out_three, square_out_one, square_out_two, square_out_three);
@@ -94,8 +96,8 @@ wire                          output_generated;
 stage_1 first_stage (
 
     .clk                (clk),
-    .clk_en             (clk_en),
-    .rst                (rst),
+    .clk_en             (clk_en_internal),
+    .rst                (rst_internal),
     .start              (start_stage_1),
     .x_one              (x_one),
     .x_two              (x_two),
@@ -114,8 +116,8 @@ stage_1 first_stage (
 stage_2 second_stage (
 
     .clk                (clk),
-    .clk_en             (clk_en),
-    .rst                (rst),
+    .clk_en             (clk_en_internal),
+    .rst                (rst_internal),
     .x_one              (x_one_cordic),
     .x_two              (x_two_cordic),
     .one_sq             (x_one_squared),
@@ -132,8 +134,8 @@ stage_2 second_stage (
 stage_3 third_stage (
 
     .clk            (clk),
-    .clk_en         (clk_en),
-    .rst            (rst),
+    .clk_en         (clk_en_internal),
+    .rst            (rst_internal),
     .start          (start_stage_3),
     .result_one     (temp_value_container),
     .one_squared    (temp_square_value_container),
@@ -151,8 +153,8 @@ stage_3 third_stage (
 stage_4 fourth_stage (
 
     .clk            (clk),
-    .rst            (rst),
-    .clk_en         (clk_en),
+    .rst            (rst_internal),
+    .clk_en         (clk_en_internal),
     .start          (start_final_add),
     .current_total  (cos_sum),
     .to_add_one     (final_add_one),
@@ -166,8 +168,8 @@ stage_4 fourth_stage (
 stage_4 short_x_div_2 (
 
     .clk            (clk),
-    .rst            (rst),
-    .clk_en         (clk_en),
+    .rst            (rst_internal),
+    .clk_en         (clk_en_internal),
     .start          (stage_1_done),
     .current_total  (half_sum),
     .to_add_one     (x_one_halved),
@@ -190,7 +192,7 @@ delay add_waiter (
 
 add output_adder (
 
-    .aclr   (rst),
+    .aclr   (rst_internal),
     .clk_en (generate_output),
     .clock  (clk),
     .dataa  (cos_sum),
@@ -202,6 +204,11 @@ add output_adder (
 
 
 initial begin
+
+    result <= 32'b0;
+    done <= 1'b0;
+    start_stage_1 <= 1'b0;
+    start_stage_3 <= 1'b0;
     half_sum <= 32'b0;
     cos_sum <= 32'b0;
     state <= IDLE;
@@ -211,122 +218,169 @@ initial begin
     temp_square_value_container <= 32'b0;
     start_stage_3 <= 1'b0;
     ready_to_output <= 1'b0;
-    generate_output < = 1'b0;
+    generate_output <= 1'b0;
     start_output_timer <= 1'b0;
+    rst_internal <= 1'b0;
+    clk_en_internal <= 1'b1;
 
 end
 
 always@(posedge clk) begin
 
 
-    ready_to_output <= !pipeline_stage_4_in_use && !shorting_stage_4_in_use && !pipeline_stage_3_in_use && cordic_pipeline_cleared && !pipeline_stage_1_in_use;
 
-    case(state)
-
-    IDLE: begin
+    if (rst_internal) begin
+        
+        result <= 32'b0;
         done <= 1'b0;
-        if (clk_en && start) begin
-
-            if (n == GO) begin
-
-                start_stage_1 <= 1'b1;
-                state <= WORKING;
-                
-
-            end else if ( n == READ ) begin
-                
-                state <= WAITING;
-
-            end else if ( n == CLEAR ) begin
-            
-            end
-
-        end
-
-    end
-
-    WORKING: begin
-
-        if (start_stage_1) start_stage_1 <= 1'b0;
-        if (stage_1_done) begin
-            first_x_halved <= x_one_halved;
-            state <= DONE;
-            result <= 32'b0;
-            
-        end
-
-
-    end
-
-    FLUSHING: begin
-        state <= DONE;
-
-    end
-
-    WAITING: begin
-        
-        if (ready_to_output) begin 
-            state <= DISPLAYING;
-            generate_output <= 1'b1;
-            start_output_timer <= 1'b1;
-        end
-    end
-
-    DISPLAYING: begin
-        start_output_timer <= 1'b0;
-        if (output_generated) begin
-        
-            state <= DONE;
-            result <= vector_sum;
-            generate_output <= 1'b0;
-
-        end
-
-    end
-
-    DONE: begin
-        done <= 1'b1;
+        start_stage_1 <= 1'b0;
+        start_stage_3 <= 1'b0;
+        half_sum <= 32'b0;
+        cos_sum <= 32'b0;
         state <= IDLE;
-    end
+        state_context_two <= WAITING;
+        first_x_halved <= 32'b0;
+        temp_value_container <= 22'b0;
+        temp_square_value_container <= 32'b0;
+        start_stage_3 <= 1'b0;
+        ready_to_output <= 1'b0;
+        generate_output <= 1'b0;
+        start_output_timer <= 1'b0;
+        rst_internal <= 1'b1;
+        clk_en_internal <= 1'b0;
 
-    default: state <= IDLE;
+    end else begin
 
-    endcase
+        ready_to_output <= !pipeline_stage_4_in_use && !shorting_stage_4_in_use && !pipeline_stage_3_in_use && cordic_pipeline_cleared && !pipeline_stage_1_in_use;
+        case(state)
+
+        IDLE: begin  //000
+            done <= 1'b0;
+            result <= 32'b0;
+            rst_internal <= 1'b0;
+            if (clk_en && start) begin
+
+                if (n == GO) begin
+
+                    start_stage_1 <= 1'b1;
+                    state <= WORKING;
+                    
+
+                end else if ( n == READ ) begin
+                    
+                    state <= GENERATING_OUTPUT;
+
+                end else if ( n == CLEAR ) begin
+                    state <= FLUSHING;
+                    rst_internal <= 1'b1;
+                end
+
+            end
+
+    
+
+        end
+
+        WORKING: begin //001
+
+            if (start_stage_1) start_stage_1 <= 1'b0;
+            if (stage_1_done) begin
+                first_x_halved <= x_one_halved;
+                state <= DONE;
+                result <= 32'b0;
+                
+            end
 
 
+        end
 
-    case (state_context_two) 
+        FLUSHING: begin //010
+            rst_internal <= 1'b0;
+            done <= 1'b1;
+            state <= DONE;
 
-        WAITING: begin // 0
-            start_stage_3 <= 1'b0;
-            if (cordic_data_valid) begin
-                state_context_two <= INPUTING;
-                temp_value_container <= cordic_out;
-                temp_square_value_container <= squared_out_cordic;
+        end
+
+        GENERATING_OUTPUT: begin //100
+            
+            if (ready_to_output) begin 
+                state <= DISPLAYING;
+                generate_output <= 1'b1;
+                start_output_timer <= 1'b1;
             end
         end
 
-        INPUTING: begin // 1
-            start_stage_3 <= 1'b1;
-            state_context_two <= WAITING;
+        DISPLAYING: begin //011
+            start_output_timer <= 1'b0;
+            if (output_generated) begin
+            
+                state <= DONE;
+                result <= vector_sum;
+                generate_output <= 1'b0;
+                done <= 1'b0;
+                start_stage_1 <= 1'b0;
+                start_stage_3 <= 1'b0;
+                half_sum <= 32'b0;
+                cos_sum <= 32'b0;
+                state_context_two <= WAITING;
+                first_x_halved <= 32'b0;
+                temp_value_container <= 22'b0;
+                temp_square_value_container <= 32'b0;
+                start_stage_3 <= 1'b0;
+                ready_to_output <= 1'b0;
+                start_output_timer <= 1'b0;
+                rst_internal <= 1'b1;
+                clk_en_internal <= 1'b0;
+
+            end
 
         end
 
-        default: state_context_two <= WAITING;
+        DONE: begin //111   
+            done <= 1'b1;
+            state <= IDLE;
+        end
 
-    endcase
+        default: state <= IDLE;
 
-    //add x/2 to result subroutine
+        endcase
 
-    if (half_short_complete) begin
-        half_sum <= shorted_new_sum;
 
-    end
 
-    if (full_pipeine_complete) begin
+        case (state_context_two) 
 
-        cos_sum <= full_pipeline_new_sum;
+            WAITING: begin // 0
+                start_stage_3 <= 1'b0;
+                if (cordic_data_valid) begin
+                    state_context_two <= INPUTING;
+                    temp_value_container <= cordic_out;
+                    temp_square_value_container <= squared_out_cordic;
+                end
+            end
 
+            INPUTING: begin // 1
+                start_stage_3 <= 1'b1;
+                state_context_two <= WAITING;
+
+            end
+
+            default: state_context_two <= WAITING;
+
+        endcase
+
+        //add x/2 to result subroutine
+
+        if (half_short_complete) begin
+            half_sum <= shorted_new_sum;
+
+        end
+
+        if (full_pipeine_complete) begin
+
+            cos_sum <= full_pipeline_new_sum;
+
+        end
+        
     end
 
 end

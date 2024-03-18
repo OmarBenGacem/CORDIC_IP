@@ -50,6 +50,10 @@ cordic_pipeline cordic_stage(
 );
 
 initial begin
+    pipeline_cleared <= 1'b0;
+    result <= 1'b0;
+    valid <= 1'b0;
+    squared_pipeline <= 32'b0;
     input_value <= default_input;
     next_value <= default_input;
     next_square <= default_input;
@@ -64,35 +68,48 @@ always @(posedge clk) begin
     valid <= data_valid;
     pipeline_cleared <= pipeline_cleared_wire;
 
+    if (rst) begin
 
-    case (state)
-        IDLE: begin
-            
-            if (start && clk_en) begin
-                enter_value <= 1'b1;
-                input_value <= x_one;
-                next_value <= x_two;
-                input_square <= one_sq;
-                next_square <= two_sq;
-                state <= NEXT;
+        pipeline_cleared <= 1'b0;
+        result <= 1'b0;
+        valid <= 1'b0;
+        squared_pipeline <= 32'b0;
+        input_value <= default_input;
+        next_value <= default_input;
+        next_square <= default_input;
+        enter_value <= 1'b0;
+        state <= IDLE;
+
+    end else begin
+
+        case (state)
+            IDLE: begin
                 
-            end 
+                if (start && clk_en) begin
+                    enter_value <= 1'b1;
+                    input_value <= x_one;
+                    next_value <= x_two;
+                    input_square <= one_sq;
+                    next_square <= two_sq;
+                    state <= NEXT;
+                    
+                end 
 
-        end
+            end
 
-        NEXT: begin
-            
-            input_value <= next_value;
-            input_square <= next_square;
-            next_value <= default_input;
-            state <= IDLE;
-            enter_value <= 1'b0;
+            NEXT: begin
+                
+                input_value <= next_value;
+                input_square <= next_square;
+                next_value <= default_input;
+                state <= IDLE;
+                enter_value <= 1'b0;
 
-        end
-
-    endcase
-
+            end
     
+        endcase
+
+    end
 
 end
 

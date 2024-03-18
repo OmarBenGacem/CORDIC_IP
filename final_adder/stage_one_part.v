@@ -110,6 +110,7 @@ initial begin
     square <= SQUARED_DEFAULT_VALUE;
     x_to_cordic <= CORDIC_DEFAULT_VALUE;
     done <= 1'b0;
+    start_timer <= 1'b0;
 
 end
 
@@ -118,9 +119,16 @@ always @(posedge clk) begin
 
     if (rst) begin
 
-    start_functions <= 1'b0;
-    start_convert <= 1'b0;
-    counter_max <= CONVERSION_LATANCY; 
+        working <= 1'b0;
+        state <= IDLE;
+        start_functions <= 1'b0;
+        start_convert <= 1'b0;
+        counter_max <= CONVERSION_LATANCY;
+        half <= HALF_DEFAULT_VALUE;
+        square <= SQUARED_DEFAULT_VALUE;
+        x_to_cordic <= CORDIC_DEFAULT_VALUE;
+        done <= 1'b0;
+        start_timer <= 1'b0;
 
     end else begin
         working <= (state == IDLE) ? 1'b0 : 1'b1;
